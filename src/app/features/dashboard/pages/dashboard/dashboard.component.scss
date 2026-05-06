@@ -1,0 +1,346 @@
+// ── Dashboard layout ──────────────────────────────────────────────────────────
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+// ── Header ────────────────────────────────────────────────────────────────────
+
+.dash-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.dash-header-left { display: flex; flex-direction: column; gap: 2px; }
+
+.dash-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--crm-text-primary);
+  margin: 0;
+}
+
+.dash-greeting {
+  font-size: 0.875rem;
+  color: var(--crm-text-secondary);
+  margin: 0;
+}
+
+// ── Date range form ───────────────────────────────────────────────────────────
+
+.date-range-form {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.preset-field { width: 160px; }
+.date-field   { width: 140px; }
+
+// ── KPI grid ──────────────────────────────────────────────────────────────────
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+// ── Charts row ────────────────────────────────────────────────────────────────
+
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 16px;
+}
+
+.chart-card {
+  border-radius: 14px;
+  box-shadow: var(--crm-shadow);
+
+  &--wide { /* already handled by grid */ }
+}
+
+.chart-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+
+  mat-icon { font-size: 18px; width: 18px; height: 18px; color: var(--crm-accent); }
+}
+
+.chart-content { padding: 8px 16px 16px !important; }
+
+.chart-wrap {
+  position: relative;
+  height: 220px;
+}
+
+.chart-skeleton { padding: 8px 0; }
+
+.chart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  gap: 8px;
+  color: var(--crm-text-secondary);
+
+  mat-icon { font-size: 40px; width: 40px; height: 40px; opacity: 0.25; }
+  p { margin: 0; font-size: 0.875rem; }
+}
+
+// ── Bottom row ────────────────────────────────────────────────────────────────
+
+.bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.feed-card,
+.tasks-card {
+  border-radius: 14px;
+  box-shadow: var(--crm-shadow);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+
+  mat-icon { font-size: 18px; width: 18px; height: 18px; color: var(--crm-accent); }
+}
+
+.tasks-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: var(--crm-accent);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+// ── Feed ──────────────────────────────────────────────────────────────────────
+
+.feed-content,
+.tasks-content {
+  padding: 0 16px 16px !important;
+  max-height: 420px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.15) transparent;
+  &::-webkit-scrollbar       { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 2px; }
+}
+
+.feed-list,
+.tasks-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.feed-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--crm-border);
+
+  &:last-child { border-bottom: none; }
+}
+
+.feed-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  img { width: 100%; height: 100%; object-fit: cover; }
+}
+
+.feed-type-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  mat-icon { font-size: 14px; width: 14px; height: 14px; }
+}
+
+.feed-text { flex: 1; min-width: 0; }
+
+.feed-title {
+  margin: 0 0 3px;
+  font-size: 0.82rem;
+  color: var(--crm-text-primary);
+  line-height: 1.3;
+}
+
+.feed-activity-title {
+  font-style: italic;
+  color: var(--crm-text-secondary);
+}
+
+.feed-contact {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.75rem;
+  color: var(--crm-text-secondary);
+  margin-bottom: 2px;
+}
+
+.feed-meta-icon {
+  font-size: 11px;
+  width: 11px;
+  height: 11px;
+}
+
+.feed-time {
+  font-size: 0.72rem;
+  color: var(--crm-text-secondary);
+  opacity: 0.7;
+}
+
+// ── Skeleton feed ─────────────────────────────────────────────────────────────
+
+.feed-skeleton { display: flex; flex-direction: column; gap: 12px; padding: 8px 0; }
+
+.feed-skeleton-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.feed-skeleton-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+// ── Empty states ──────────────────────────────────────────────────────────────
+
+.feed-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--crm-text-secondary);
+
+  mat-icon { font-size: 40px; width: 40px; height: 40px; opacity: 0.25; }
+  p { margin: 0; font-size: 0.875rem; }
+}
+
+// ── Tasks ─────────────────────────────────────────────────────────────────────
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--crm-border);
+
+  &:last-child { border-bottom: none; }
+  &.overdue .task-title { color: #ef4444; }
+}
+
+.task-checkbox { flex-shrink: 0; }
+
+.task-type-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.task-icon { font-size: 14px; width: 14px; height: 14px; }
+
+.task-text { flex: 1; min-width: 0; }
+
+.task-title {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--crm-text-primary);
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.task-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.75rem;
+  color: var(--crm-text-secondary);
+}
+
+.task-meta-icon { font-size: 11px; width: 11px; height: 11px; }
+
+.task-due {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.75rem;
+  color: var(--crm-text-secondary);
+
+  &.overdue {
+    color: #ef4444;
+    font-weight: 600;
+  }
+}
+
+// ── Responsive ────────────────────────────────────────────────────────────────
+
+@media (max-width: 1199px) {
+  .kpi-grid    { grid-template-columns: repeat(2, 1fr); }
+  .charts-row  { grid-template-columns: 1fr; }
+  .bottom-row  { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 599px) {
+  .kpi-grid    { grid-template-columns: 1fr; }
+  .dash-header { flex-direction: column; }
+  .date-range-form { width: 100%; .preset-field { width: 100%; } }
+}

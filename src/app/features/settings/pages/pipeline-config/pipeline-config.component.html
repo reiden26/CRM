@@ -1,0 +1,86 @@
+<div class="settings-page">
+  <div class="settings-page-header">
+    <div>
+      <h2 class="settings-page-title">{{ 'SETTINGS.PIPELINE.TITLE' | translate }}</h2>
+      <p class="settings-page-sub">{{ 'SETTINGS.PIPELINE.SUBTITLE' | translate }}</p>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <mat-card class="table-card">
+      <div class="table-skeleton">
+        @for (i of [1,2,3,4,5,6]; track i) {
+          <div class="skeleton-row">
+            <app-skeleton width="20px" height="20px" />
+            <app-skeleton width="12px" height="12px" variant="circle" />
+            <app-skeleton width="40%" height="14px" />
+          </div>
+        }
+      </div>
+    </mat-card>
+  } @else {
+    <mat-card class="table-card">
+      <div cdkDropList [cdkDropListData]="stages()" (cdkDropListDropped)="onDrop($event)" class="stages-list">
+        @for (stage of stages(); track trackById($index, stage)) {
+          <div cdkDrag class="stage-row">
+            <mat-icon cdkDragHandle class="drag-handle">drag_indicator</mat-icon>
+            <div class="color-section">
+              <div class="color-dot" [style.background]="stage.color"></div>
+              <div class="color-presets">
+                @for (c of PRESET_COLORS; track c) {
+                  <button class="color-preset" [style.background]="c" [class.selected]="stage.color === c"
+                    (click)="setEditColor(stage.id, c)" [matTooltip]="c"></button>
+                }
+              </div>
+            </div>
+            <input class="stage-name-input" [value]="stage.name"
+              (blur)="updateStage(stage, { name: $any($event.target).value })"
+              (keydown.enter)="$any($event.target).blur()" />
+            <div class="stage-badges">
+              @if (stage.isWon)     { <span class="badge badge-won">{{ 'SETTINGS.PIPELINE.BADGES.WON' | translate }}</span> }
+              @if (stage.isLost)    { <span class="badge badge-lost">{{ 'SETTINGS.PIPELINE.BADGES.LOST' | translate }}</span> }
+              @if (stage.isDefault) { <span class="badge badge-default">{{ 'SETTINGS.PIPELINE.BADGES.DEFAULT' | translate }}</span> }
+            </div>
+            <button mat-icon-button color="warn" class="delete-btn" (click)="deleteStage(stage.id)"
+              [matTooltip]="'SETTINGS.PIPELINE.DELETE' | translate">
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+            <div class="drag-preview" *cdkDragPreview>
+              <mat-icon>drag_indicator</mat-icon>
+              <div class="color-dot" [style.background]="stage.color"></div>
+              <span>{{ stage.name }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    </mat-card>
+
+    <mat-card class="add-card">
+      <mat-card-header>
+        <mat-card-title class="add-title">{{ 'SETTINGS.PIPELINE.ADD' | translate }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="addForm" (ngSubmit)="addStage()" class="add-form">
+          <mat-form-field appearance="outline" class="name-field">
+            <mat-label>{{ 'SETTINGS.PIPELINE.STAGE_NAME' | translate }} *</mat-label>
+            <input matInput formControlName="name" />
+          </mat-form-field>
+          <div class="color-picker-row">
+            <span class="color-label">{{ 'SETTINGS.PIPELINE.COLOR' | translate }}</span>
+            @for (c of PRESET_COLORS; track c) {
+              <button type="button" class="color-preset" [style.background]="c"
+                [class.selected]="addForm.get('color')?.value === c"
+                (click)="addForm.patchValue({ color: c })"></button>
+            }
+          </div>
+          <div class="add-actions">
+            <button mat-flat-button color="primary" type="submit" [disabled]="addForm.invalid || saving()">
+              @if (saving()) { <mat-spinner diameter="16" /> }
+              <mat-icon>add</mat-icon> {{ 'SETTINGS.PIPELINE.ADD' | translate }}
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

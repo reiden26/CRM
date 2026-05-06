@@ -1,0 +1,63 @@
+<div class="upgrade-wrapper">
+
+  <div class="upgrade-header">
+    <mat-icon class="upgrade-icon">rocket_launch</mat-icon>
+    <h1>Upgrade your plan</h1>
+    <p class="limit-message">{{ message() }}</p>
+    @if (limit() > 0) {
+      <div class="usage-badge">
+        {{ current() }} / {{ limit() }} {{ resource() }} used
+      </div>
+    }
+  </div>
+
+  <div class="plans-grid">
+    @for (plan of plans; track plan.plan) {
+      <mat-card [class.highlighted]="plan.highlight" class="plan-card">
+        @if (plan.highlight) {
+          <div class="popular-badge">Most Popular</div>
+        }
+        <mat-card-header>
+          <mat-card-title>{{ plan.label }}</mat-card-title>
+          <mat-card-subtitle class="price">{{ plan.price }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <ul class="features-list">
+            <li>
+              <mat-icon>people</mat-icon>
+              {{ plan.limits.maxUsers === -1 ? 'Unlimited' : plan.limits.maxUsers }} users
+            </li>
+            <li>
+              <mat-icon>contacts</mat-icon>
+              {{ plan.limits.maxContacts === -1 ? 'Unlimited' : (plan.limits.maxContacts | number) }} contacts
+            </li>
+            <li>
+              <mat-icon>handshake</mat-icon>
+              {{ plan.limits.maxDeals === -1 ? 'Unlimited' : (plan.limits.maxDeals | number) }} deals
+            </li>
+            @for (feature of plan.limits.features; track feature) {
+              <li>
+                <mat-icon>check_circle</mat-icon>
+                {{ feature | titlecase }}
+              </li>
+            }
+          </ul>
+        </mat-card-content>
+        <mat-card-actions>
+          <button
+            mat-flat-button
+            [color]="plan.highlight ? 'primary' : 'accent'"
+            class="upgrade-btn"
+          >
+            Get {{ plan.label }}
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    }
+  </div>
+
+  <button mat-button (click)="goBack()" class="back-btn">
+    <mat-icon>arrow_back</mat-icon> Back to dashboard
+  </button>
+
+</div>

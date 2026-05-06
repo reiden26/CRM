@@ -1,0 +1,99 @@
+<div class="deal-card" [class.dragging]="isDragging">
+
+  <!-- Card header: title + menu -->
+  <div class="card-header">
+    <span class="deal-title" (click)="view.emit(deal.id)" matTooltip="{{ deal.title }}">
+      {{ deal.title }}
+    </span>
+    <button
+      mat-icon-button
+      class="card-menu-btn"
+      [matMenuTriggerFor]="cardMenu"
+      (click)="$event.stopPropagation()"
+      aria-label="Deal options"
+    >
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #cardMenu="matMenu">
+      <button mat-menu-item (click)="edit.emit(deal)">
+        <mat-icon>edit</mat-icon> Edit
+      </button>
+      <button mat-menu-item class="delete-item" (click)="delete.emit(deal.id)">
+        <mat-icon>close</mat-icon> Mark as lost
+      </button>
+    </mat-menu>
+  </div>
+
+  <!-- Company / contact -->
+  @if (deal.companyName || deal.contactName) {
+    <div class="card-meta">
+      @if (deal.companyName) {
+        <span class="meta-item">
+          <mat-icon class="meta-icon">business</mat-icon>
+          {{ deal.companyName }}
+        </span>
+      }
+      @if (deal.contactName) {
+        <span class="meta-item">
+          <mat-icon class="meta-icon">person</mat-icon>
+          {{ deal.contactName }}
+        </span>
+      }
+    </div>
+  }
+
+  <!-- Value -->
+  <div class="card-value">{{ formattedValue }}</div>
+
+  <!-- Footer: probability + close date + avatar -->
+  <div class="card-footer">
+
+    <!-- Probability indicator -->
+    <div class="probability-wrap" [matTooltip]="probabilityLabel + ' probability'">
+      <div class="probability-bar">
+        <div
+          class="probability-fill"
+          [style.width.%]="deal.probability"
+          [style.background]="probabilityColor"
+        ></div>
+      </div>
+      <span class="probability-label" [style.color]="probabilityColor">
+        {{ deal.probability }}%
+      </span>
+    </div>
+
+    <div class="footer-right">
+      <!-- Close date -->
+      @if (deal.expectedCloseDate) {
+        <span
+          class="close-date"
+          [class.overdue]="deal.isOverdue"
+          [class.urgent]="deal.isUrgent && !deal.isOverdue"
+          [matTooltip]="(deal.expectedCloseDate | date:'mediumDate') ?? ''"
+        >
+          <mat-icon class="date-icon">
+            {{ deal.isOverdue ? 'warning' : (deal.isUrgent ? 'schedule' : 'event') }}
+          </mat-icon>
+          {{ closeDateLabel }}
+        </span>
+      }
+
+      <!-- Assignee avatar -->
+      @if (deal.assignedToName) {
+        <div
+          class="assignee-avatar"
+          [style.background]="deal.assignedToAvatar ? 'transparent' : avatarColor"
+          [matTooltip]="deal.assignedToName"
+        >
+          @if (deal.assignedToAvatar) {
+            <img [src]="deal.assignedToAvatar" [alt]="deal.assignedToName" />
+          } @else {
+            {{ avatarInitials }}
+          }
+        </div>
+      }
+    </div>
+
+  </div>
+
+</div>

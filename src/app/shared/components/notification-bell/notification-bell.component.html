@@ -1,0 +1,169 @@
+<!-- ── Bell button ──────────────────────────────────────────────────────── -->
+<button
+  mat-icon-button
+  class="bell-btn"
+  [class.panel-open]="panelOpen()"
+  (click)="togglePanel()"
+  [attr.aria-expanded]="panelOpen()"
+  aria-haspopup="true"
+  aria-label="Notifications"
+  matTooltip="Notifications"
+  [matTooltipDisabled]="panelOpen()"
+>
+  <mat-icon
+    class="bell-icon"
+    [class.has-unread]="hasUnread()"
+    [matBadge]="badgeLabel()"
+    matBadgeColor="warn"
+    matBadgeSize="small"
+    [matBadgeHidden]="!hasUnread()"
+    [matBadgeOverlap]="true"
+  >
+    {{ panelOpen() ? 'notifications' : (hasUnread() ? 'notifications_active' : 'notifications_none') }}
+  </mat-icon>
+</button>
+
+<!-- ── Notification panel ────────────────────────────────────────────────── -->
+@if (panelOpen()) {
+  <div
+    #panel
+    class="notif-panel"
+    role="dialog"
+    aria-label="Notifications panel"
+    (click)="$event.stopPropagation()"
+  >
+
+    <!-- Header -->
+    <div class="panel-header">
+      <div class="panel-header-left">
+        <span class="panel-title">{{ 'NOTIFICATIONS.TITLE' | translate }}</span>
+        @if (hasUnread()) {
+          <span class="unread-badge">{{ unreadCount() }}</span>
+        }
+      </div>
+      <div class="panel-header-right">
+        @if (hasUnread()) {
+          <button
+            mat-button
+            class="mark-all-btn"
+            (click)="markAllAsRead($event)"
+            [disabled]="loading()"
+          >
+            {{ 'NOTIFICATIONS.MARK_ALL' | translate }}
+          </button>
+        }
+        <button
+          mat-icon-button
+          class="close-btn"
+          (click)="closePanel()"
+          aria-label="Close notifications"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <mat-divider />
+
+    <!-- Body -->
+    <div class="panel-body">
+
+      <!-- Loading -->
+      @if (loading()) {
+        <div class="panel-state">
+          <mat-spinner diameter="32" />
+          <span>{{ 'NOTIFICATIONS.LOADING' | translate }}</span>
+        </div>
+      }
+
+      <!-- Empty -->
+      @if (!loading() && !hasItems()) {
+        <div class="panel-state">
+          <mat-icon class="empty-icon">notifications_none</mat-icon>
+          <span class="empty-title">{{ 'NOTIFICATIONS.EMPTY_TITLE' | translate }}</span>
+          <span class="empty-sub">{{ 'NOTIFICATIONS.EMPTY_SUB' | translate }}</span>
+        </div>
+      }
+
+      <!-- List -->
+      @if (!loading() && hasItems()) {
+        <ul class="notif-list" role="list">
+          @for (n of visibleNotifications(); track trackById($index, n)) {
+            <li
+              class="notif-item"
+              [class.unread]="!n.isRead"
+              [class]="'notif-item type-' + n.type"
+              role="listitem"
+              matRipple
+              [matRippleColor]="'rgba(0,0,0,0.04)'"
+              (click)="navigateToResource(n)"
+              (keydown.enter)="navigateToResource(n)"
+              tabindex="0"
+            >
+              <!-- Type icon -->
+              <div class="notif-icon-wrap" [class]="'icon-' + n.type">
+                <mat-icon class="notif-icon">{{ getTypeIcon(n.type) }}</mat-icon>
+              </div>
+
+              <!-- Content -->
+              <div class="notif-content">
+                <p class="notif-title">{{ n.title }}</p>
+                @if (n.body) {
+                  <p class="notif-body">{{ n.body }}</p>
+                }
+                <span class="notif-time">{{ n.createdAt | timeAgo }}</span>
+              </div>
+
+              <!-- Actions (visible on hover) -->
+              <div class="notif-actions" (click)="$event.stopPropagation()">
+                @if (!n.isRead) {
+                  <button
+                    mat-icon-button
+                    class="action-icon-btn"
+                    matTooltip="Mark as read"
+                    matTooltipPosition="left"
+                    (click)="markAsRead(n, $event)"
+                    aria-label="Mark as read"
+                  >
+                    <mat-icon>done</mat-icon>
+                  </button>
+                }
+                <button
+                  mat-icon-button
+                  class="action-icon-btn delete-btn"
+                  matTooltip="Delete"
+                  matTooltipPosition="left"
+                  (click)="deleteNotification(n.id, $event)"
+                  aria-label="Delete notification"
+                >
+                  <mat-icon>delete_outline</mat-icon>
+                </button>
+              </div>
+
+              <!-- Unread dot -->
+              @if (!n.isRead) {
+                <span class="unread-dot" aria-hidden="true"></span>
+              }
+            </li>
+          }
+        </ul>
+      }
+
+    </div>
+
+    <!-- Footer -->
+    @if (hasItems()) {
+      <mat-divider />
+      <div class="panel-footer">
+        <button mat-button class="view-all-btn" (click)="viewAll()">
+          <mat-icon>open_in_new</mat-icon>
+          {{ 'NOTIFICATIONS.VIEW_ALL' | translate }}
+          @if (totalCount() > 20) {
+            <span class="total-count">({{ totalCount() }})</span>
+          }
+        </button>
+      </div>
+    }
+
+  </div>
+}

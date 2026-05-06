@@ -1,0 +1,222 @@
+<div class="dashboard">
+
+  <!-- ── Page header ──────────────────────────────────────────────────────── -->
+  <div class="dash-header">
+    <div class="dash-header-left">
+      <h1 class="dash-title">{{ 'DASHBOARD.TITLE' | translate }}</h1>
+      <p class="dash-greeting">{{ greeting }}, {{ firstName }} 👋</p>
+    </div>
+
+    <form [formGroup]="dateRangeForm" class="date-range-form">
+      <mat-form-field appearance="outline" class="preset-field">
+        <mat-label>{{ 'DASHBOARD.PERIOD.THIS_MONTH' | translate }}</mat-label>
+        <mat-select formControlName="preset">
+          @for (opt of dateRangeOptions; track opt.value) {
+            <mat-option [value]="opt.value">{{ opt.label | translate }}</mat-option>
+          }
+        </mat-select>
+        <mat-icon matPrefix>date_range</mat-icon>
+      </mat-form-field>
+      @if (showCustomRange()) {
+        <mat-form-field appearance="outline" class="date-field">
+          <mat-label>{{ 'DASHBOARD.PERIOD.FROM' | translate }}</mat-label>
+          <input matInput [matDatepicker]="fromPicker" formControlName="dateFrom" />
+          <mat-datepicker-toggle matIconSuffix [for]="fromPicker" />
+          <mat-datepicker #fromPicker />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="date-field">
+          <mat-label>{{ 'DASHBOARD.PERIOD.TO' | translate }}</mat-label>
+          <input matInput [matDatepicker]="toPicker" formControlName="dateTo" />
+          <mat-datepicker-toggle matIconSuffix [for]="toPicker" />
+          <mat-datepicker #toPicker />
+        </mat-form-field>
+      }
+    </form>
+  </div>
+
+  <!-- ── KPI cards ────────────────────────────────────────────────────────── -->
+  <div class="kpi-grid">
+    @for (card of kpiCards(); track card.label) {
+      <app-kpi-card
+        [label]="card.label"
+        [value]="card.value"
+        [icon]="card.icon"
+        [iconColor]="card.iconColor"
+        [change]="card.change"
+        [loading]="loadingKPIs()"
+        [subtitle]="card['subtitle'] ?? ''"
+      />
+    }
+  </div>
+
+  <!-- ── Charts row ───────────────────────────────────────────────────────── -->
+  <div class="charts-row">
+
+    <mat-card class="chart-card">
+      <mat-card-header>
+        <mat-card-title class="chart-title">
+          <mat-icon>bar_chart</mat-icon>
+          {{ 'DASHBOARD.CHARTS.DEALS_BY_STAGE' | translate }}
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="chart-content">
+        @if (loadingCharts()) {
+          <div class="chart-skeleton"><app-skeleton width="100%" height="200px" /></div>
+        } @else if (dealsByStage().length === 0) {
+          <div class="chart-empty">
+            <mat-icon>bar_chart</mat-icon>
+            <p>{{ 'COMMON.LOADING' | translate }}</p>
+          </div>
+        } @else {
+          <div class="chart-wrap"><canvas #dealsChart></canvas></div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="chart-card chart-card--wide">
+      <mat-card-header>
+        <mat-card-title class="chart-title">
+          <mat-icon>show_chart</mat-icon>
+          {{ 'DASHBOARD.CHARTS.REVENUE' | translate:{ year: currentYear } }}
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="chart-content">
+        @if (loadingCharts()) {
+          <div class="chart-skeleton"><app-skeleton width="100%" height="200px" /></div>
+        } @else {
+          <div class="chart-wrap"><canvas #revenueChart></canvas></div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+
+  <!-- ── Bottom row ───────────────────────────────────────────────────────── -->
+  <div class="bottom-row">
+
+    <!-- Activity feed -->
+    <mat-card class="feed-card">
+      <mat-card-header>
+        <mat-card-title class="section-title">
+          <mat-icon>timeline</mat-icon>
+          {{ 'DASHBOARD.ACTIVITY.TITLE' | translate }}
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="feed-content">
+        @if (loadingActivities()) {
+          <div class="feed-skeleton">
+            @for (i of [1,2,3,4,5]; track i) {
+              <div class="feed-skeleton-item">
+                <app-skeleton width="36px" height="36px" variant="circle" />
+                <div class="feed-skeleton-text">
+                  <app-skeleton width="70%" height="13px" />
+                  <app-skeleton width="40%" height="11px" />
+                </div>
+              </div>
+            }
+          </div>
+        } @else if (activities().length === 0) {
+          <div class="feed-empty">
+            <mat-icon>timeline</mat-icon>
+            <p>{{ 'DASHBOARD.ACTIVITY.EMPTY' | translate }}</p>
+          </div>
+        } @else {
+          <ul class="feed-list" role="list">
+            @for (item of activities(); track trackById($index, item)) {
+              <li class="feed-item">
+                <div class="feed-avatar"
+                  [style.background]="item.userAvatar ? 'transparent' : getUserAvatarColor(item.userName)"
+                  [matTooltip]="item.userName">
+                  @if (item.userAvatar) { <img [src]="item.userAvatar" [alt]="item.userName" /> }
+                  @else { {{ getUserInitials(item.userName) }} }
+                </div>
+                <div class="feed-type-icon" [style.background]="getActivityIconColor(item.type) + '18'">
+                  <mat-icon [style.color]="getActivityIconColor(item.type)">{{ getActivityIcon(item.type) }}</mat-icon>
+                </div>
+                <div class="feed-text">
+                  <p class="feed-title">
+                    <strong>{{ item.userName }}</strong>
+                    {{ 'DASHBOARD.ACTIVITY.LOGGED' | translate }}
+                    {{ 'TASKS.TYPES.' + item.type.toUpperCase() | translate }}:
+                    <span class="feed-activity-title">{{ item.title }}</span>
+                  </p>
+                  @if (item.contactName) {
+                    <span class="feed-contact">
+                      <mat-icon class="feed-meta-icon">person</mat-icon>
+                      {{ item.contactName }}
+                    </span>
+                  }
+                  <span class="feed-time">{{ item.createdAt | timeAgo }}</span>
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- My tasks -->
+    <mat-card class="tasks-card">
+      <mat-card-header>
+        <mat-card-title class="section-title">
+          <mat-icon>task_alt</mat-icon>
+          {{ 'DASHBOARD.TASKS.TITLE' | translate }}
+          @if (tasks().length > 0) {
+            <span class="tasks-badge">{{ tasks().length }}</span>
+          }
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="tasks-content">
+        @if (loadingTasks()) {
+          <div class="feed-skeleton">
+            @for (i of [1,2,3]; track i) {
+              <div class="feed-skeleton-item">
+                <app-skeleton width="20px" height="20px" />
+                <div class="feed-skeleton-text">
+                  <app-skeleton width="80%" height="13px" />
+                  <app-skeleton width="50%" height="11px" />
+                </div>
+              </div>
+            }
+          </div>
+        } @else if (tasks().length === 0) {
+          <div class="feed-empty">
+            <mat-icon>check_circle_outline</mat-icon>
+            <p>{{ 'DASHBOARD.TASKS.EMPTY' | translate }}</p>
+          </div>
+        } @else {
+          <ul class="tasks-list" role="list">
+            @for (task of tasks(); track trackById($index, task)) {
+              <li class="task-item" [class.overdue]="task.isOverdue">
+                <mat-checkbox [disabled]="isCompletingTask(task.id)" (change)="completeTask(task.id)" class="task-checkbox" [attr.aria-label]="task.title" />
+                <div class="task-type-icon" [style.background]="getActivityIconColor(task.type) + '18'">
+                  <mat-icon [style.color]="getActivityIconColor(task.type)" class="task-icon">{{ getTaskIcon(task.type) }}</mat-icon>
+                </div>
+                <div class="task-text">
+                  <span class="task-title">{{ task.title }}</span>
+                  <div class="task-meta">
+                    @if (task.contactName) {
+                      <span class="task-meta-item">
+                        <mat-icon class="task-meta-icon">person</mat-icon>
+                        {{ task.contactName }}
+                      </span>
+                    }
+                    @if (task.dueDate) {
+                      <span class="task-due" [class.overdue]="task.isOverdue"
+                        [matTooltip]="(task.dueDate | date:'mediumDate') ?? ''">
+                        <mat-icon class="task-meta-icon">{{ task.isOverdue ? 'warning' : 'schedule' }}</mat-icon>
+                        {{ task.dueDate | date:'MMM d' }}
+                      </span>
+                    }
+                  </div>
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+
+</div>

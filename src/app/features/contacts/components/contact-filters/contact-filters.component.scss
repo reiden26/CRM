@@ -1,0 +1,34 @@
+.filters-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 16px;
+  background: var(--crm-bg-card);
+  border-radius: 12px;
+  box-shadow: var(--crm-shadow);
+  margin-bottom: 16px;
+}
+
+.filter-search {
+  flex: 1 1 260px;
+  min-width: 200px;
+}
+
+.filter-field {
+  flex: 1 1 160px;
+  min-width: 140px;
+}
+
+.reset-btn {
+  align-self: center;
+  margin-top: 4px;
+  color: var(--crm-warn);
+  border-color: var(--crm-warn);
+  white-space: nowrap;
+}
+
+@media (max-width: 599px) {
+  .filter-search,
+  .filter-field { flex: 1 1 100%; }
+}

@@ -1,0 +1,139 @@
+<div class="settings-page">
+  <div class="settings-page-header">
+    <div>
+      <h2 class="settings-page-title">{{ 'SETTINGS.USERS.TITLE' | translate }}</h2>
+      <p class="settings-page-sub">{{ 'SETTINGS.USERS.SUBTITLE' | translate }}</p>
+    </div>
+    <button mat-flat-button color="primary" (click)="showInvite.set(!showInvite())">
+      <mat-icon>person_add</mat-icon> {{ 'SETTINGS.USERS.INVITE' | translate }}
+    </button>
+  </div>
+
+  @if (showInvite()) {
+    <mat-card class="invite-card">
+      <mat-card-content>
+        <form [formGroup]="inviteForm" (ngSubmit)="inviteUser()" class="invite-form">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'AUTH.LOGIN.EMAIL' | translate }} *</mat-label>
+            <input matInput formControlName="email" type="email" />
+            <mat-icon matPrefix>email</mat-icon>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'AUTH.SIGNUP.FULL_NAME' | translate }} *</mat-label>
+            <input matInput formControlName="fullName" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Rol *</mat-label>
+            <mat-select formControlName="role">
+              @for (r of roleOptions; track r.value) {
+                <mat-option [value]="r.value">{{ 'SETTINGS.USERS.ROLES.' + r.value.toUpperCase() | translate }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <div class="invite-actions">
+            <button mat-stroked-button type="button" (click)="showInvite.set(false)">{{ 'COMMON.CANCEL' | translate }}</button>
+            <button mat-flat-button color="primary" type="submit" [disabled]="inviteForm.invalid || saving()">
+              @if (saving()) { <mat-spinner diameter="16" /> }
+              Enviar invitación
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <mat-card class="table-card">
+    @if (loading()) {
+      <div class="table-skeleton">
+        @for (i of [1,2,3,4]; track i) {
+          <div class="skeleton-row">
+            <app-skeleton width="36px" height="36px" variant="circle" />
+            <app-skeleton width="30%" height="14px" />
+            <app-skeleton width="20%" height="14px" />
+            <app-skeleton width="15%" height="22px" />
+          </div>
+        }
+      </div>
+    } @else {
+      <table mat-table [dataSource]="users()" class="users-table" aria-label="Team members">
+
+        <ng-container matColumnDef="avatar">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let row">
+            <div class="user-avatar" [style.background]="row.avatarUrl ? 'transparent' : getAvatarColor(row.fullName)">
+              @if (row.avatarUrl) { <img [src]="row.avatarUrl" [alt]="row.fullName" /> }
+              @else { {{ getInitials(row.fullName) }} }
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>{{ 'CONTACTS.COLUMNS.NAME' | translate }}</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="user-name">{{ row.fullName }}</span>
+            @if (row.id === currentUserId()) {
+              <span class="you-badge">{{ 'SETTINGS.USERS.YOU' | translate }}</span>
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>{{ 'AUTH.LOGIN.EMAIL' | translate }}</th>
+          <td mat-cell *matCellDef="let row"><span class="cell-muted">{{ row.email }}</span></td>
+        </ng-container>
+
+        <ng-container matColumnDef="role">
+          <th mat-header-cell *matHeaderCellDef>Rol</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="role-chip" [style.background]="ROLE_COLORS[row.role] + '22'" [style.color]="ROLE_COLORS[row.role]">
+              {{ 'SETTINGS.USERS.ROLES.' + row.role.toUpperCase() | translate }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <td mat-cell *matCellDef="let row">
+            <mat-slide-toggle
+              [checked]="row.isActive"
+              [disabled]="row.id === currentUserId()"
+              (change)="toggleActive(row)"
+              [matTooltip]="row.id === currentUserId() ? 'No puedes desactivarte a ti mismo' : ''"
+            />
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="joined">
+          <th mat-header-cell *matHeaderCellDef>Registrado</th>
+          <td mat-cell *matCellDef="let row"><span class="cell-muted">{{ row.createdAt | timeAgo }}</span></td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="col-actions"></th>
+          <td mat-cell *matCellDef="let row" class="col-actions">
+            @if (row.id !== currentUserId()) {
+              <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="Acciones">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #userMenu="matMenu">
+                @for (r of roleOptions; track r.value) {
+                  <button mat-menu-item (click)="changeRole(row.id, r.value)" [disabled]="row.role === r.value">
+                    <mat-icon>{{ row.role === r.value ? 'check' : 'person' }}</mat-icon>
+                    {{ 'SETTINGS.USERS.ACTIONS.SET_ROLE' | translate:{ role: ('SETTINGS.USERS.ROLES.' + r.value.toUpperCase() | translate) } }}
+                  </button>
+                }
+                <mat-divider />
+                <button mat-menu-item (click)="resetPassword(row.email)">
+                  <mat-icon>lock_reset</mat-icon> {{ 'SETTINGS.USERS.ACTIONS.RESET_PWD' | translate }}
+                </button>
+              </mat-menu>
+            }
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns;" class="user-row"></tr>
+      </table>
+    }
+  </mat-card>
+</div>

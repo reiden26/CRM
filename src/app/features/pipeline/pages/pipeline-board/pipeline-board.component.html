@@ -1,0 +1,280 @@
+<div class="pipeline-page">
+
+  <!-- ── Page header ──────────────────────────────────────────────────────── -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">{{ 'PIPELINE.TITLE' | translate }}</h1>
+      <div class="pipeline-stats">
+        <span class="stat-item">
+          <mat-icon>handshake</mat-icon>
+          {{ totalDeals() }} deals
+        </span>
+      </div>
+    </div>
+    <div class="page-header-right">
+      <!-- View toggle -->
+      <button
+        mat-icon-button
+        [matTooltip]="viewMode() === 'kanban' ? 'Switch to list view' : 'Switch to Kanban'"
+        (click)="toggleView()"
+      >
+        <mat-icon>{{ viewMode() === 'kanban' ? 'view_list' : 'view_kanban' }}</mat-icon>
+      </button>
+      <!-- Create deal -->
+      @if ('deals' | hasPermission:'create') {
+        <button mat-flat-button color="primary" (click)="openCreateDialog()">
+          <mat-icon>add</mat-icon> {{ 'PIPELINE.NEW_DEAL' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- ── Filters ──────────────────────────────────────────────────────────── -->
+  <form [formGroup]="filterForm" class="filters-bar">
+    <mat-form-field appearance="outline" class="filter-search">
+      <mat-label>{{ 'PIPELINE.FILTERS.SEARCH' | translate }}</mat-label>
+      <input matInput formControlName="search" placeholder="Deal title…" />
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Assigned to</mat-label>
+      <mat-select formControlName="assignedTo">
+        <mat-option [value]="null">{{ 'CONTACTS.FILTERS.ANYONE' | translate }}</mat-option>
+        @for (m of teamMembers(); track m.id) {
+          <mat-option [value]="m.id">{{ m.fullName }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field filter-narrow">
+      <mat-label>Min value</mat-label>
+      <input matInput formControlName="minValue" type="number" min="0" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field filter-narrow">
+      <mat-label>Max value</mat-label>
+      <input matInput formControlName="maxValue" type="number" min="0" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Close from</mat-label>
+      <input matInput [matDatepicker]="fromPicker" formControlName="dateFrom" />
+      <mat-datepicker-toggle matIconSuffix [for]="fromPicker" />
+      <mat-datepicker #fromPicker />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Close to</mat-label>
+      <input matInput [matDatepicker]="toPicker" formControlName="dateTo" />
+      <mat-datepicker-toggle matIconSuffix [for]="toPicker" />
+      <mat-datepicker #toPicker />
+    </mat-form-field>
+
+    <button mat-icon-button matTooltip="Reset filters" (click)="resetFilters()" type="button">
+      <mat-icon>filter_alt_off</mat-icon>
+    </button>
+  </form>
+
+  <!-- ── Loading bar ──────────────────────────────────────────────────────── -->
+  @if (loading$()) {
+    <mat-progress-bar mode="indeterminate" class="loading-bar" />
+  }
+
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- KANBAN VIEW                                                           -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  @if (viewMode() === 'kanban') {
+
+    <div class="kanban-board" cdkDropListGroup>
+      @for (stage of stages$(); track trackByStageId($index, stage)) {
+
+        <div class="kanban-column">
+
+          <!-- Column header -->
+          <div class="column-header" [style.border-top-color]="stage.color">
+            <div class="column-header-left">
+              <span class="column-name">{{ stage.name }}</span>
+              <span class="column-count">{{ getDealsForStage(stage.id).length }}</span>
+            </div>
+            <div class="column-header-right">
+              @if (getStatsForStage(stage.id); as stats) {
+                @if (stats.count > 0) {
+                  <span class="column-value">
+                    {{ formatCurrency(stats.totalValue, stats.currency) }}
+                  </span>
+                }
+              }
+              @if ('deals' | hasPermission:'create') {
+                <button
+                  mat-icon-button
+                  class="add-deal-btn"
+                  [matTooltip]="'Add deal to ' + stage.name"
+                  (click)="openCreateDialog(stage)"
+                >
+                  <mat-icon>add</mat-icon>
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- Drop zone -->
+          <div
+            class="column-body"
+            cdkDropList
+            [id]="'stage-' + stage.id"
+            [cdkDropListData]="getDealsForStage(stage.id)"
+            [cdkDropListConnectedTo]="dropListIds()"
+            (cdkDropListDropped)="onDrop($event, stage)"
+          >
+            @for (deal of getDealsForStage(stage.id); track trackByDealId($index, deal)) {
+              <div cdkDrag [cdkDragData]="deal" class="drag-item">
+                <app-deal-card
+                  [deal]="deal"
+                  (edit)="openEditDialog($event)"
+                  (delete)="deleteDeal($event)"
+                />
+                <div class="drag-placeholder" cdkDragPlaceholder></div>
+              </div>
+            }
+
+            <!-- Empty column state -->
+            @if (getDealsForStage(stage.id).length === 0) {
+              <div class="column-empty">
+                <mat-icon>inbox</mat-icon>
+                <span>Drop deals here</span>
+              </div>
+            }
+          </div>
+
+        </div>
+
+      }
+    </div>
+
+  }
+
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- LIST VIEW                                                             -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  @if (viewMode() === 'list') {
+
+    <div class="list-card">
+      <table mat-table [dataSource]="deals$()" class="deals-table" aria-label="Deals">
+
+        <!-- Title -->
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>{{ 'PIPELINE.COLUMNS.DEAL' | translate }}</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="deal-title-cell">{{ row.title }}</span>
+            @if (row.contactName) {
+              <span class="deal-contact">{{ row.contactName }}</span>
+            }
+          </td>
+        </ng-container>
+
+        <!-- Company -->
+        <ng-container matColumnDef="company">
+          <th mat-header-cell *matHeaderCellDef>{{ 'PIPELINE.COLUMNS.COMPANY' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.companyName ?? '—' }}</td>
+        </ng-container>
+
+        <!-- Stage -->
+        <ng-container matColumnDef="stage">
+          <th mat-header-cell *matHeaderCellDef>{{ 'PIPELINE.COLUMNS.STAGE' | translate }}</th>
+          <td mat-cell *matCellDef="let row">
+            @if (stages$().length > 0) {
+              <span class="stage-chip"
+                [style.background]="(stages$() | stageColor:row.stage) + '22'"
+                [style.color]="stages$() | stageColor:row.stage">
+                {{ row.stage | titlecase }}
+              </span>
+            }
+          </td>
+        </ng-container>
+
+        <!-- Value -->
+        <ng-container matColumnDef="value">
+          <th mat-header-cell *matHeaderCellDef>{{ 'PIPELINE.COLUMNS.VALUE' | translate }}</th>
+          <td mat-cell *matCellDef="let row">
+            <strong>{{ formatCurrency(row.value, row.currency) }}</strong>
+          </td>
+        </ng-container>
+
+        <!-- Probability -->
+        <ng-container matColumnDef="probability">
+          <th mat-header-cell *matHeaderCellDef>{{ 'PIPELINE.COLUMNS.PROB' | translate }}</th>
+          <td mat-cell *matCellDef="let row">
+            <div class="prob-cell">
+              <div class="prob-bar-sm">
+                <div class="prob-fill-sm"
+                  [style.width.%]="row.probability"
+                  [style.background]="getProbabilityColor(row.probability)">
+                </div>
+              </div>
+              <span [style.color]="getProbabilityColor(row.probability)">
+                {{ row.probability }}%
+              </span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Close date -->
+        <ng-container matColumnDef="closeDate">
+          <th mat-header-cell *matHeaderCellDef>{{ 'PIPELINE.COLUMNS.CLOSE' | translate }}</th>
+          <td mat-cell *matCellDef="let row">
+            @if (row.expectedCloseDate) {
+              <span
+                [class.text-overdue]="row.isOverdue"
+                [class.text-urgent]="row.isUrgent && !row.isOverdue"
+              >
+                {{ row.expectedCloseDate | date:'mediumDate' }}
+              </span>
+            } @else {
+              <span class="text-muted">—</span>
+            }
+          </td>
+        </ng-container>
+
+        <!-- Assigned to -->
+        <ng-container matColumnDef="assignedTo">
+          <th mat-header-cell *matHeaderCellDef>{{ 'PIPELINE.COLUMNS.ASSIGNED' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.assignedToName ?? '—' }}</td>
+        </ng-container>
+
+        <!-- Actions -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="col-actions">Actions</th>
+          <td mat-cell *matCellDef="let row" class="col-actions">
+            <div class="row-actions">
+              @if ('deals' | hasPermission:'update') {
+                <button mat-icon-button matTooltip="Edit" (click)="openEditDialog(row)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              }
+              @if ('deals' | hasPermission:'delete') {
+                <button mat-icon-button matTooltip="Mark as lost" color="warn" (click)="deleteDeal(row.id)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              }
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="listColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: listColumns;" class="deal-row"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td [attr.colspan]="listColumns.length" class="empty-row">
+            <div class="empty-state">
+              <mat-icon>handshake</mat-icon>
+              <p>No deals found</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  }
+
+</div>

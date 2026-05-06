@@ -1,0 +1,174 @@
+<div class="settings-page">
+  <div class="settings-page-header">
+    <div>
+      <h2 class="settings-page-title">{{ 'SETTINGS.COMPANY.TITLE' | translate }}</h2>
+      <p class="settings-page-sub">{{ 'SETTINGS.COMPANY.SUBTITLE' | translate }}</p>
+    </div>
+    <button mat-flat-button color="primary" (click)="save()" [disabled]="form.invalid || saving()">
+      @if (saving()) { <mat-spinner diameter="16" /> }
+      {{ 'SETTINGS.COMPANY.SAVE' | translate }}
+    </button>
+  </div>
+
+  <mat-card class="profile-card">
+    <mat-card-content>
+
+      <div class="logo-section">
+        <div class="logo-preview">
+          @if (logoUrl()) { <img [src]="logoUrl()!" alt="Logo" class="logo-img" /> }
+          @else { <mat-icon class="logo-placeholder">business</mat-icon> }
+        </div>
+        <div class="logo-actions">
+          <label class="upload-btn">
+            @if (uploadingLogo()) { <mat-spinner diameter="16" /> }
+            @else { <mat-icon>upload</mat-icon> }
+            {{ 'SETTINGS.COMPANY.LOGO.UPLOAD' | translate }}
+            <input type="file" accept="image/*" (change)="uploadLogo($event)" hidden />
+          </label>
+          @if (logoUrl()) {
+            <button mat-stroked-button color="warn" (click)="removeLogo()">
+              <mat-icon>delete</mat-icon> {{ 'SETTINGS.COMPANY.LOGO.REMOVE' | translate }}
+            </button>
+          }
+          <span class="logo-hint">{{ 'SETTINGS.COMPANY.LOGO.HINT' | translate }}</span>
+        </div>
+      </div>
+
+      <mat-divider class="section-divider" />
+
+      <form [formGroup]="form" class="profile-form">
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'SETTINGS.COMPANY.FIELDS.NAME' | translate }} *</mat-label>
+            <input matInput formControlName="name" />
+            <mat-icon matPrefix>business</mat-icon>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'SETTINGS.COMPANY.FIELDS.INDUSTRY' | translate }}</mat-label>
+            <mat-select formControlName="industry">
+              <mat-option value="">{{ 'COMMON.NONE' | translate }}</mat-option>
+              @for (i of INDUSTRIES; track i) { <mat-option [value]="i">{{ i }}</mat-option> }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'SETTINGS.COMPANY.FIELDS.WEBSITE' | translate }}</mat-label>
+            <input matInput formControlName="website" placeholder="https://…" />
+            <mat-icon matPrefix>language</mat-icon>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'SETTINGS.COMPANY.FIELDS.PHONE' | translate }}</mat-label>
+            <input matInput formControlName="phone" type="tel" />
+            <mat-icon matPrefix>phone</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <mat-divider class="section-divider" />
+        <h3 class="section-heading">Configuración regional</h3>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'SETTINGS.COMPANY.FIELDS.TIMEZONE' | translate }}</mat-label>
+            <mat-select formControlName="timezone">
+              @for (tz of TIMEZONES; track tz) { <mat-option [value]="tz">{{ tz }}</mat-option> }
+            </mat-select>
+            <mat-icon matPrefix>schedule</mat-icon>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'SETTINGS.COMPANY.FIELDS.CURRENCY' | translate }}</mat-label>
+            <mat-select formControlName="currency">
+              @for (c of CURRENCIES; track c) { <mat-option [value]="c">{{ c }}</mat-option> }
+            </mat-select>
+            <mat-icon matPrefix>attach_money</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <mat-divider class="section-divider" />
+        <h3 class="section-heading">{{ 'SETTINGS.COMPANY.BRAND.TITLE' | translate }}</h3>
+
+        <div class="form-row color-row">
+          <div class="color-field">
+            <label class="color-label">{{ 'SETTINGS.COMPANY.BRAND.PRIMARY' | translate }}</label>
+            <div class="color-input-wrap">
+              <input type="color" formControlName="primaryColor" class="color-picker" />
+              <mat-form-field appearance="outline" class="color-text">
+                <input matInput formControlName="primaryColor" placeholder="#1a237e" />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="color-field">
+            <label class="color-label">{{ 'SETTINGS.COMPANY.BRAND.ACCENT' | translate }}</label>
+            <div class="color-input-wrap">
+              <input type="color" formControlName="accentColor" class="color-picker" />
+              <mat-form-field appearance="outline" class="color-text">
+                <input matInput formControlName="accentColor" placeholder="#0288d1" />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Plan & Billing -->
+  <mat-card class="billing-card">
+    <mat-card-header>
+      <mat-card-title class="billing-title">
+        <mat-icon>workspace_premium</mat-icon>
+        {{ 'SETTINGS.COMPANY.BILLING.TITLE' | translate }}
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="billing-content">
+
+      <div class="plan-header">
+        <div class="plan-badge" [class]="'plan-' + (currentPlan() | lowercase)">
+          <mat-icon>{{ planIcon() }}</mat-icon>
+          {{ 'SETTINGS.COMPANY.BILLING.PLAN' | translate:{ plan: currentPlan() } }}
+        </div>
+        <a mat-flat-button color="primary" href="https://crm.app/pricing" target="_blank" rel="noopener">
+          <mat-icon>rocket_launch</mat-icon>
+          {{ 'SETTINGS.COMPANY.BILLING.UPGRADE' | translate }}
+        </a>
+      </div>
+
+      <div class="usage-grid">
+        @for (item of usageItems(); track item.label) {
+          <div class="usage-item">
+            <div class="usage-header">
+              <span class="usage-label">
+                <mat-icon class="usage-icon">{{ item.icon }}</mat-icon>
+                {{ 'SETTINGS.COMPANY.BILLING.USAGE.' + item.label.toUpperCase() | translate }}
+              </span>
+              <span class="usage-count" [class.at-limit]="item.atLimit">
+                @if (item.limit === -1) {
+                  {{ item.current | number }} / {{ 'SETTINGS.COMPANY.BILLING.USAGE.UNLIMITED' | translate }}
+                } @else {
+                  {{ item.current | number }} / {{ item.limit | number }}
+                }
+              </span>
+            </div>
+            @if (item.limit !== -1) {
+              <mat-progress-bar mode="determinate" [value]="item.pct" [color]="item.atLimit ? 'warn' : 'primary'" class="usage-bar" />
+            }
+          </div>
+        }
+      </div>
+
+      <mat-divider class="section-divider" />
+      <h3 class="section-heading">{{ 'SETTINGS.COMPANY.BILLING.FEATURES' | translate }}</h3>
+      <div class="features-grid">
+        @for (f of planFeatures(); track f) {
+          <div class="feature-item">
+            <mat-icon class="feature-icon">check_circle</mat-icon>
+            {{ f | titlecase }}
+          </div>
+        }
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+</div>

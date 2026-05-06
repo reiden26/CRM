@@ -1,0 +1,68 @@
+# ── Compiled output ───────────────────────────────────────────────────────────
+/dist
+/tmp
+/out-tsc
+/bazel-out
+
+# ── Node ──────────────────────────────────────────────────────────────────────
+/node_modules
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# ── Angular cache ─────────────────────────────────────────────────────────────
+/.angular/cache
+.sass-cache/
+
+# ── Environment files with real credentials ───────────────────────────────────
+# NEVER commit real credentials. Use environment.example.ts as reference.
+# src/environments/environment.ts      ← uncomment if you add real keys locally
+# src/environments/environment.prod.ts ← uncomment if you add real keys locally
+
+# ── Supabase local dev ────────────────────────────────────────────────────────
+supabase/.branches
+supabase/.temp
+supabase/config.toml.local
+
+# ── Secrets & keys ────────────────────────────────────────────────────────────
+.env
+.env.local
+.env.development
+.env.production
+*.pem
+*.key
+*.p12
+*.pfx
+secrets.json
+secrets.*.json
+
+# ── IDEs ──────────────────────────────────────────────────────────────────────
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.history/
+
+# ── VS Code (keep useful configs) ─────────────────────────────────────────────
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# ── OS files ──────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Test & coverage ───────────────────────────────────────────────────────────
+/coverage
+testem.log
+/typings
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/

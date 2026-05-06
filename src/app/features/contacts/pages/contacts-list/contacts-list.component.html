@@ -1,0 +1,259 @@
+<div class="contacts-page">
+
+  <!-- ── Page header ──────────────────────────────────────────────────────── -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">{{ 'CONTACTS.TITLE' | translate }}</h1>
+      <span class="total-badge">{{ total$() | number }}</span>
+    </div>
+    <div class="page-header-right">
+      <!-- Export -->
+      @if ('contacts' | hasPermission:'export') {
+        <button mat-stroked-button (click)="exportCsv()" [disabled]="loading$()">
+          <mat-icon>download</mat-icon>
+          {{ 'CONTACTS.EXPORT' | translate }}
+        </button>
+      }
+      <!-- Create -->
+      @if ('contacts' | hasPermission:'create') {
+        <button mat-flat-button color="primary" (click)="openCreateForm()">
+          <mat-icon>add</mat-icon>
+          {{ 'CONTACTS.NEW' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- ── Filters ──────────────────────────────────────────────────────────── -->
+  <app-contact-filters
+    [filters]="filters()"
+    (filtersChange)="onFiltersChange($event)"
+    (searchChange)="onSearchChange($event)"
+  />
+
+  <!-- ── Bulk action bar ──────────────────────────────────────────────────── -->
+  @if (selectedCount$() > 0) {
+    <div class="bulk-bar">
+      <span class="bulk-count">{{ selectedCount$() }} selected</span>
+      <div class="bulk-actions">
+        @if ('contacts' | hasPermission:'delete') {
+          <button mat-stroked-button color="warn" (click)="bulkDelete()">
+            <mat-icon>archive</mat-icon> Archive selected
+          </button>
+        }
+        <button mat-icon-button (click)="contactsService.clearSelection()" matTooltip="Clear selection">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ── Table card ───────────────────────────────────────────────────────── -->
+  <div class="table-card">
+
+    <!-- Loading bar -->
+    @if (loading$()) {
+      <mat-progress-bar mode="indeterminate" class="loading-bar" />
+    }
+
+    <!-- Table -->
+    <div class="table-wrapper">
+      <table
+        mat-table
+        [dataSource]="contacts$()"
+        matSort
+        (matSortChange)="onSortChange($event)"
+        class="contacts-table"
+        aria-label="Contacts"
+      >
+
+        <!-- Select column -->
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef class="col-select">
+            <mat-checkbox
+              [checked]="allSelected()"
+              [indeterminate]="someSelected()"
+              (change)="toggleSelectAll()"
+              aria-label="Select all"
+            />
+          </th>
+          <td mat-cell *matCellDef="let row" class="col-select">
+            <mat-checkbox
+              [checked]="isSelected(row.id)"
+              (change)="toggleSelect(row.id)"
+              (click)="$event.stopPropagation()"
+              [attr.aria-label]="'Select ' + row.fullName"
+            />
+          </td>
+        </ng-container>
+
+        <!-- Name column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="first_name">{{ 'CONTACTS.COLUMNS.NAME' | translate }}</th>
+          <td mat-cell *matCellDef="let row">
+            <div class="name-cell" (click)="viewContact(row.id)">
+              <div class="avatar-sm" [style.background]="getAvatarColor(row)">
+                {{ getInitials(row) }}
+              </div>
+              <div class="name-info">
+                <span class="name-primary">{{ row.fullName }}</span>
+                @if (row.position) {
+                  <span class="name-secondary">{{ row.position }}</span>
+                }
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Company column -->
+        <ng-container matColumnDef="company">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="company_id">{{ 'CONTACTS.COLUMNS.COMPANY' | translate }}</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="cell-text">{{ row.companyName ?? '—' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Email column -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="email">{{ 'CONTACTS.COLUMNS.EMAIL' | translate }}</th>
+          <td mat-cell *matCellDef="let row">
+            @if (row.email) {
+              <a class="email-link" [href]="'mailto:' + row.email" (click)="$event.stopPropagation()">
+                {{ row.email }}
+              </a>
+            } @else {
+              <span class="cell-muted">—</span>
+            }
+          </td>
+        </ng-container>
+
+        <!-- Phone column -->
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef>{{ 'CONTACTS.COLUMNS.PHONE' | translate }}</th>
+          <td mat-cell *matCellDef="let row">
+            @if (row.phone) {
+              <a class="phone-link" [href]="'tel:' + row.phone" (click)="$event.stopPropagation()">
+                {{ row.phone }}
+              </a>
+            } @else {
+              <span class="cell-muted">—</span>
+            }
+          </td>
+        </ng-container>
+
+        <!-- Status column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="status">{{ 'CONTACTS.COLUMNS.STATUS' | translate }}</th>
+          <td mat-cell *matCellDef="let row">
+            <span
+              class="status-chip"
+              [style.background]="statusColor(row.status) + '22'"
+              [style.color]="statusColor(row.status)"
+            >
+              {{ statusLabel(row.status) }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Assigned to column -->
+        <ng-container matColumnDef="assignedTo">
+          <th mat-header-cell *matHeaderCellDef>{{ 'CONTACTS.COLUMNS.ASSIGNED' | translate }}</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="cell-text">{{ row.assignedToName ?? '—' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Created at column -->
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="created_at">{{ 'CONTACTS.COLUMNS.CREATED' | translate }}</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="cell-muted" [matTooltip]="(row.createdAt | date:'medium') ?? ''">
+              {{ row.createdAt | timeAgo }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Actions column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="col-actions">Actions</th>
+          <td mat-cell *matCellDef="let row" class="col-actions">
+            <div class="row-actions">
+              <button mat-icon-button matTooltip="View" (click)="viewContact(row.id)">
+                <mat-icon>visibility</mat-icon>
+              </button>
+              @if ('contacts' | hasPermission:'update') {
+                <button mat-icon-button matTooltip="Edit" (click)="openEditForm(row)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              }
+              @if ('contacts' | hasPermission:'delete') {
+                <button mat-icon-button matTooltip="Archive" color="warn" (click)="deleteContact(row.id)">
+                  <mat-icon>archive</mat-icon>
+                </button>
+              }
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Header + rows -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns;"
+          class="contact-row"
+          [class.selected]="isSelected(row.id)"
+        ></tr>
+
+        <!-- Empty state -->
+        <tr class="mat-row" *matNoDataRow>
+          <td [attr.colspan]="displayedColumns.length" class="empty-row">
+            <div class="empty-state">
+              <mat-icon>people_outline</mat-icon>
+              <p>{{ 'CONTACTS.EMPTY' | translate }}</p>
+              @if ('contacts' | hasPermission:'create') {
+                <button mat-stroked-button (click)="openCreateForm()">
+                  <mat-icon>add</mat-icon> Add your first contact
+                </button>
+              }
+            </div>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+    <!-- Paginator -->
+    <mat-paginator
+      [length]="total$()"
+      [pageSize]="pagination().pageSize"
+      [pageIndex]="pagination().page"
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      (page)="onPageChange($event)"
+      aria-label="Contacts pagination"
+    />
+
+  </div>
+
+</div>
+
+<!-- ── Slide-in form panel ───────────────────────────────────────────────── -->
+@if (showForm()) {
+  <div class="form-overlay" (click)="closeForm()">
+    <div class="form-panel" (click)="$event.stopPropagation()">
+      <div class="form-panel-header">
+        <h2>{{ editContact() ? ('COMMON.EDIT' | translate) + ' Contact' : ('CONTACTS.NEW' | translate) }}</h2>
+        <button mat-icon-button (click)="closeForm()" aria-label="Close">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="form-panel-body">
+        <app-contact-form
+          [contact]="editContact()"
+          [saving]="saving$()"
+          (submitted)="onFormSubmit($event)"
+          (cancelled)="closeForm()"
+        />
+      </div>
+    </div>
+  </div>
+}

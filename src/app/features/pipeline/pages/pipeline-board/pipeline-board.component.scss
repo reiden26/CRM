@@ -1,0 +1,331 @@
+// ── Page ──────────────────────────────────────────────────────────────────────
+
+.pipeline-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  // Override shell padding so the board can scroll horizontally
+  margin: -24px;
+  padding: 24px;
+}
+
+// ── Header ────────────────────────────────────────────────────────────────────
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.page-header-left { display: flex; align-items: center; gap: 12px; }
+.page-header-right { display: flex; align-items: center; gap: 8px; }
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--crm-text-primary);
+  margin: 0;
+}
+
+.pipeline-stats {
+  display: flex;
+  gap: 12px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.82rem;
+  color: var(--crm-text-secondary);
+  background: var(--crm-bg-surface);
+  border: 1px solid var(--crm-border);
+  border-radius: 20px;
+  padding: 3px 10px;
+
+  mat-icon { font-size: 14px; width: 14px; height: 14px; }
+}
+
+// ── Filters bar ───────────────────────────────────────────────────────────────
+
+.filters-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-start;
+  background: var(--crm-bg-card);
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: var(--crm-shadow);
+}
+
+.filter-search {
+  flex: 1 1 220px;
+  min-width: 180px;
+}
+
+.filter-field {
+  flex: 1 1 150px;
+  min-width: 120px;
+
+  &.filter-narrow { flex: 0 1 110px; min-width: 90px; }
+}
+
+// ── Loading bar ───────────────────────────────────────────────────────────────
+
+.loading-bar { border-radius: 4px; }
+
+// ── Kanban board ──────────────────────────────────────────────────────────────
+
+.kanban-board {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 16px;
+  flex: 1;
+  align-items: flex-start;
+
+  // Smooth horizontal scroll
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.2) transparent;
+  &::-webkit-scrollbar       { height: 6px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 3px; }
+}
+
+// ── Kanban column ─────────────────────────────────────────────────────────────
+
+.kanban-column {
+  flex: 0 0 280px;
+  min-width: 280px;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  background: var(--crm-bg-surface);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+// ── Column header ─────────────────────────────────────────────────────────────
+
+.column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 12px 10px;
+  border-top: 3px solid transparent;
+  background: var(--crm-bg-card);
+  border-radius: 12px 12px 0 0;
+  flex-shrink: 0;
+}
+
+.column-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.column-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--crm-text-primary);
+}
+
+.column-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: var(--crm-bg-surface);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--crm-text-secondary);
+}
+
+.column-header-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.column-value {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--crm-text-secondary);
+}
+
+.add-deal-btn {
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  color: var(--crm-text-secondary);
+  opacity: 0;
+  transition: opacity 150ms;
+
+  mat-icon { font-size: 16px; width: 16px; height: 16px; }
+
+  .kanban-column:hover & { opacity: 1; }
+}
+
+// ── Column body (drop zone) ───────────────────────────────────────────────────
+
+.column-body {
+  flex: 1;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 120px;
+  max-height: calc(100vh - 320px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.15) transparent;
+  &::-webkit-scrollbar       { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 2px; }
+
+  // CDK drop list active state
+  &.cdk-drop-list-dragging .drag-item:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+// ── Drag item ─────────────────────────────────────────────────────────────────
+
+.drag-item {
+  cursor: grab;
+
+  &.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  &.cdk-drag-preview {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    cursor: grabbing;
+  }
+}
+
+// ── Drag placeholder ──────────────────────────────────────────────────────────
+
+.drag-placeholder {
+  height: 80px;
+  border: 2px dashed var(--crm-accent);
+  border-radius: 10px;
+  background: rgba(2, 136, 209, 0.05);
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+// ── Empty column ──────────────────────────────────────────────────────────────
+
+.column-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 24px 12px;
+  color: var(--crm-text-secondary);
+  opacity: 0.5;
+  font-size: 0.8rem;
+  text-align: center;
+
+  mat-icon { font-size: 28px; width: 28px; height: 28px; }
+}
+
+// ── List view ─────────────────────────────────────────────────────────────────
+
+.list-card {
+  background: var(--crm-bg-card);
+  border-radius: 12px;
+  box-shadow: var(--crm-shadow);
+  overflow: hidden;
+}
+
+.deals-table { width: 100%; }
+
+.col-actions { width: 100px; text-align: right; }
+
+.deal-title-cell {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--crm-text-primary);
+}
+
+.deal-contact {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--crm-text-secondary);
+}
+
+.stage-chip {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.prob-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.prob-bar-sm {
+  width: 60px;
+  height: 4px;
+  background: var(--crm-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.prob-fill-sm {
+  height: 100%;
+  border-radius: 2px;
+}
+
+.text-overdue { color: #ef4444; font-weight: 600; }
+.text-urgent  { color: #f59e0b; font-weight: 600; }
+.text-muted   { color: var(--crm-text-secondary); }
+
+.row-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 120ms;
+}
+
+.deal-row:hover .row-actions { opacity: 1; }
+
+.empty-row { padding: 0 !important; }
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 64px 24px;
+  text-align: center;
+  color: var(--crm-text-secondary);
+
+  mat-icon { font-size: 56px; width: 56px; height: 56px; opacity: 0.25; }
+  p { margin: 0; }
+}
+
+// ── Mobile ────────────────────────────────────────────────────────────────────
+
+@media (max-width: 959px) {
+  .pipeline-page { margin: -16px; padding: 16px; }
+  .kanban-column { flex: 0 0 260px; min-width: 260px; }
+}

@@ -1,0 +1,138 @@
+<div class="settings-page">
+  <div class="settings-page-header">
+    <div>
+      <h2 class="settings-page-title">{{ 'SETTINGS.NAV.NOTIF_PREFS' | translate }}</h2>
+      <p class="settings-page-sub">
+        Los cambios se guardan automáticamente.
+        @if (saving()) {
+          <span class="saving-indicator">
+            <mat-spinner diameter="12" /> {{ 'COMMON.SAVING' | translate }}
+          </span>
+        }
+      </p>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <mat-card class="pref-card">
+      <div class="pref-skeleton">
+        @for (i of [1,2,3]; track i) {
+          <div class="skeleton-row">
+            <app-skeleton width="60%" height="14px" />
+            <app-skeleton width="40px" height="24px" />
+          </div>
+        }
+      </div>
+    </mat-card>
+  } @else {
+    <form [formGroup]="form">
+
+      <!-- Email notifications -->
+      <mat-card class="pref-card">
+        <mat-card-header>
+          <mat-card-title class="pref-section-title">
+            <mat-icon>email</mat-icon> Notificaciones por Email
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="pref-content">
+
+          <div class="pref-row">
+            <div class="pref-info">
+              <span class="pref-label">Deal asignado a mí</span>
+              <span class="pref-desc">Recibe un email cuando te asignen un deal.</span>
+            </div>
+            <mat-slide-toggle formControlName="emailOnDealAssigned" color="primary" />
+          </div>
+
+          <mat-divider />
+
+          <div class="pref-row">
+            <div class="pref-info">
+              <span class="pref-label">Recordatorio de tarea</span>
+              <span class="pref-desc">Recibe un email cuando una tarea asignada esté próxima a vencer.</span>
+            </div>
+            <mat-slide-toggle formControlName="emailOnTaskDue" color="primary" />
+          </div>
+
+          <mat-divider />
+
+          <div class="pref-row">
+            <div class="pref-info">
+              <span class="pref-label">Mencionado en una nota</span>
+              <span class="pref-desc">Recibe un email cuando alguien te mencione en una actividad.</span>
+            </div>
+            <mat-slide-toggle formControlName="emailOnMention" color="primary" />
+          </div>
+
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Push notifications -->
+      <mat-card class="pref-card">
+        <mat-card-header>
+          <mat-card-title class="pref-section-title">
+            <mat-icon>notifications_active</mat-icon> Notificaciones Push
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="pref-content">
+
+          <div class="push-status-banner" [class.active]="isSubscribed()" [class.denied]="pushDenied">
+            @if (pushUnsupported) {
+              <mat-icon>block</mat-icon>
+              <span>{{ 'COMMON.PUSH_BLOCKED' | translate }}</span>
+            } @else if (pushDenied) {
+              <mat-icon>notifications_off</mat-icon>
+              <span>Las notificaciones push están bloqueadas. Actívalas en la configuración del navegador.</span>
+            } @else if (isSubscribed()) {
+              <mat-icon>check_circle</mat-icon>
+              <span>{{ 'COMMON.PUSH_ACTIVE' | translate }}</span>
+              <button mat-stroked-button class="push-action-btn" (click)="togglePush()" [disabled]="toggling()">
+                @if (toggling()) { <mat-spinner diameter="14" /> }
+                Desactivar
+              </button>
+            } @else {
+              <mat-icon>notifications_none</mat-icon>
+              <span>Las notificaciones push no están activas en este dispositivo.</span>
+              <button mat-flat-button color="primary" class="push-action-btn" (click)="togglePush()" [disabled]="toggling()">
+                @if (toggling()) { <mat-spinner diameter="14" /> }
+                {{ 'COMMON.PUSH_ENABLE' | translate }}
+              </button>
+            }
+          </div>
+
+          <mat-divider />
+
+          <div class="pref-row" [class.disabled-row]="!isSubscribed()">
+            <div class="pref-info">
+              <span class="pref-label">Deal asignado a mí</span>
+              <span class="pref-desc">Recibe una notificación push cuando te asignen un deal.</span>
+            </div>
+            <mat-slide-toggle formControlName="pushOnDealAssigned" color="primary" [disabled]="!isSubscribed()" />
+          </div>
+
+          <mat-divider />
+
+          <div class="pref-row" [class.disabled-row]="!isSubscribed()">
+            <div class="pref-info">
+              <span class="pref-label">Recordatorio de tarea</span>
+              <span class="pref-desc">Recibe una notificación push para tareas próximas a vencer.</span>
+            </div>
+            <mat-slide-toggle formControlName="pushOnTaskDue" color="primary" [disabled]="!isSubscribed()" />
+          </div>
+
+          <mat-divider />
+
+          <div class="pref-row" [class.disabled-row]="!isSubscribed()">
+            <div class="pref-info">
+              <span class="pref-label">Mencionado en una nota</span>
+              <span class="pref-desc">Recibe una notificación push cuando alguien te mencione.</span>
+            </div>
+            <mat-slide-toggle formControlName="pushOnMention" color="primary" [disabled]="!isSubscribed()" />
+          </div>
+
+        </mat-card-content>
+      </mat-card>
+
+    </form>
+  }
+</div>

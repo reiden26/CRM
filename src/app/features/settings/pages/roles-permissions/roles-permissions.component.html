@@ -1,0 +1,63 @@
+<div class="settings-page">
+  <div class="settings-page-header">
+    <div>
+      <h2 class="settings-page-title">{{ 'SETTINGS.NAV.ROLES' | translate }}</h2>
+      <p class="settings-page-sub">Referencia de permisos por rol (solo lectura).</p>
+    </div>
+  </div>
+
+  <div class="role-cards">
+    @for (meta of roleMeta; track meta.role) {
+      <mat-card class="role-card">
+        <mat-card-content class="role-card-body">
+          <span class="role-badge" [style.background]="meta.color + '22'" [style.color]="meta.color">
+            {{ meta.label }}
+          </span>
+          <p class="role-desc">{{ meta.desc }}</p>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+
+  <mat-card class="matrix-card">
+    <div class="matrix-wrap">
+      <table class="matrix-table" aria-label="Matriz de permisos">
+        <thead>
+          <tr>
+            <th class="resource-col">Recurso</th>
+            @for (meta of roleMeta; track meta.role) {
+              <th class="role-col"><span [style.color]="meta.color">{{ meta.label }}</span></th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (resource of resources; track resource) {
+            <tr>
+              <td class="resource-name">{{ resource | titlecase }}</td>
+              @for (meta of roleMeta; track meta.role) {
+                <td class="perm-cell">
+                  <div class="action-dots">
+                    @for (action of actions; track action) {
+                      <span class="action-dot" [class.allowed]="hasPermission(meta.role, resource, action)"
+                        [matTooltip]="action">
+                        {{ action[0].toUpperCase() }}
+                      </span>
+                    }
+                  </div>
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="legend">
+      <span class="legend-item"><span class="action-dot allowed">C</span> Crear</span>
+      <span class="legend-item"><span class="action-dot allowed">R</span> Leer</span>
+      <span class="legend-item"><span class="action-dot allowed">U</span> Actualizar</span>
+      <span class="legend-item"><span class="action-dot allowed">D</span> Eliminar</span>
+      <span class="legend-item"><span class="action-dot allowed">E</span> Exportar</span>
+      <span class="legend-item"><span class="action-dot">—</span> Denegado</span>
+    </div>
+  </mat-card>
+</div>

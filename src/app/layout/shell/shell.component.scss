@@ -1,0 +1,100 @@
+// ── Shell layout variables ────────────────────────────────────────────────────
+$sidenav-width:           260px;
+$sidenav-collapsed-width:  64px;
+$navbar-height:            64px;
+$transition-speed:        250ms;
+$transition-easing:       cubic-bezier(0.4, 0, 0.2, 1);
+
+// ── Container ─────────────────────────────────────────────────────────────────
+
+.shell-container {
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+
+  // Override Material's default background
+  --mat-sidenav-container-background-color: transparent;
+  --mat-sidenav-container-divider-color: transparent;
+}
+
+// ── Sidenav panel ─────────────────────────────────────────────────────────────
+
+.shell-sidenav {
+  width: $sidenav-width;
+  border-right: none !important;
+  background-color: var(--crm-sidebar-bg) !important;
+  transition: width $transition-speed $transition-easing;
+  overflow: hidden;
+
+  // Collapsed state — icon-only mode
+  &.collapsed {
+    width: $sidenav-collapsed-width;
+  }
+
+  // Remove Material's default box-shadow on side mode
+  &.mat-drawer-side {
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// ── Main content area ─────────────────────────────────────────────────────────
+
+.shell-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--crm-bg-surface);
+  transition: margin-left $transition-speed $transition-easing;
+}
+
+// ── Page content ──────────────────────────────────────────────────────────────
+
+.shell-main {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  // Custom scrollbar
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+
+  &::-webkit-scrollbar       { width: 6px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    &:hover { background: rgba(0, 0, 0, 0.35); }
+  }
+}
+
+.shell-main-inner {
+  padding: 24px;
+  max-width: 1440px;
+  min-height: 100%;
+  animation: fadeInUp 200ms $transition-easing both;
+}
+
+// ── Page enter animation ──────────────────────────────────────────────────────
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ── Mobile overrides ──────────────────────────────────────────────────────────
+
+@media (max-width: 959px) {
+  .shell-sidenav {
+    width: $sidenav-width !important; // always full width on mobile overlay
+  }
+
+  .shell-main-inner {
+    padding: 16px;
+  }
+}

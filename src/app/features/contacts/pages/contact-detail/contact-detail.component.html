@@ -1,0 +1,262 @@
+<!-- Loading -->
+@if (loading()) {
+  <div class="detail-loading">
+    <mat-spinner diameter="40" />
+  </div>
+}
+
+@if (!loading() && contact()) {
+  <div class="detail-page">
+
+    <!-- ── Back + actions ─────────────────────────────────────────────────── -->
+    <div class="detail-topbar">
+      <a mat-button routerLink="/contacts" class="back-btn">
+        <mat-icon>arrow_back</mat-icon> Contacts
+      </a>
+      <div class="detail-actions">
+        @if ('contacts' | hasPermission:'update') {
+          <button mat-stroked-button (click)="showEdit.set(true)">
+            <mat-icon>edit</mat-icon> Edit
+          </button>
+        }
+        @if ('contacts' | hasPermission:'delete') {
+          <button mat-stroked-button color="warn" (click)="archiveContact()">
+            <mat-icon>archive</mat-icon> Archive
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- ── Hero card ──────────────────────────────────────────────────────── -->
+    <div class="hero-card">
+      <div class="hero-avatar" [style.background]="avatarColor()">
+        {{ initials() }}
+      </div>
+      <div class="hero-info">
+        <h1 class="hero-name">{{ contact()!.fullName }}</h1>
+        @if (contact()!.position) {
+          <p class="hero-position">{{ contact()!.position }}</p>
+        }
+        @if (contact()!.companyName) {
+          <p class="hero-company">
+            <mat-icon class="hero-meta-icon">business</mat-icon>
+            {{ contact()!.companyName }}
+          </p>
+        }
+        <div class="hero-badges">
+          <span class="status-badge"
+            [style.background]="statusColor() + '22'"
+            [style.color]="statusColor()">
+            {{ statusLabel() }}
+          </span>
+          @if (contact()!.source) {
+            <span class="source-badge">{{ SOURCE_LABELS[contact()!.source!] }}</span>
+          }
+        </div>
+      </div>
+      <div class="hero-contact-info">
+        @if (contact()!.email) {
+          <a class="contact-link" [href]="'mailto:' + contact()!.email">
+            <mat-icon>email</mat-icon> {{ contact()!.email }}
+          </a>
+        }
+        @if (contact()!.phone) {
+          <a class="contact-link" [href]="'tel:' + contact()!.phone">
+            <mat-icon>phone</mat-icon> {{ contact()!.phone }}
+          </a>
+        }
+        @if (contact()!.assignedToName) {
+          <span class="contact-link">
+            <mat-icon>person</mat-icon> {{ contact()!.assignedToName }}
+          </span>
+        }
+      </div>
+    </div>
+
+    <!-- ── Tabs ───────────────────────────────────────────────────────────── -->
+    <mat-tab-group class="detail-tabs" animationDuration="200ms">
+
+      <!-- ── Tab: Info ──────────────────────────────────────────────────── -->
+      <mat-tab label="Information">
+        <div class="tab-content">
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">First name</span>
+              <span class="info-value">{{ contact()!.firstName }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Last name</span>
+              <span class="info-value">{{ contact()!.lastName }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Email</span>
+              <span class="info-value">{{ contact()!.email ?? '—' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Phone</span>
+              <span class="info-value">{{ contact()!.phone ?? '—' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Company</span>
+              <span class="info-value">{{ contact()!.companyName ?? '—' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Position</span>
+              <span class="info-value">{{ contact()!.position ?? '—' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Source</span>
+              <span class="info-value">{{ contact()!.source ? SOURCE_LABELS[contact()!.source!] : '—' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Status</span>
+              <span class="info-value">{{ statusLabel() }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Assigned to</span>
+              <span class="info-value">{{ contact()!.assignedToName ?? '—' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Created</span>
+              <span class="info-value">{{ contact()!.createdAt | date:'mediumDate' }}</span>
+            </div>
+          </div>
+
+          @if (contact()!.tags.length > 0) {
+            <div class="tags-section">
+              <span class="info-label">Tags</span>
+              <div class="tags-list">
+                @for (tag of contact()!.tags; track tag.id) {
+                  <span class="tag-chip"
+                    [style.background]="tag.color + '22'"
+                    [style.color]="tag.color">
+                    {{ tag.name }}
+                  </span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </mat-tab>
+
+      <!-- ── Tab: Activities ────────────────────────────────────────────── -->
+      <mat-tab [label]="'Activities (' + activities().length + ')'">
+        <div class="tab-content">
+
+          <!-- Quick add activity -->
+          @if ('activities' | hasPermission:'create') {
+            @if (!addingActivity()) {
+              <button mat-stroked-button class="add-activity-btn" (click)="addingActivity.set(true)">
+                <mat-icon>add</mat-icon> Add activity
+              </button>
+            } @else {
+              <form [formGroup]="activityForm" (ngSubmit)="submitActivity()" class="quick-activity-form">
+                <mat-form-field appearance="outline" class="activity-type-field">
+                  <mat-label>Type</mat-label>
+                  <mat-select formControlName="type">
+                    @for (t of activityTypes; track t.value) {
+                      <mat-option [value]="t.value">
+                        <mat-icon>{{ t.icon }}</mat-icon> {{ t.label }}
+                      </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="activity-title-field">
+                  <mat-label>Title *</mat-label>
+                  <input matInput formControlName="title" placeholder="What happened?" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="activity-desc-field">
+                  <mat-label>Notes</mat-label>
+                  <textarea matInput formControlName="description" rows="2"></textarea>
+                </mat-form-field>
+                <div class="quick-form-actions">
+                  <button mat-stroked-button type="button" (click)="addingActivity.set(false)">Cancel</button>
+                  <button mat-flat-button color="primary" type="submit" [disabled]="activityForm.invalid || saving()">
+                    @if (saving()) { <mat-spinner diameter="16" /> }
+                    Save
+                  </button>
+                </div>
+              </form>
+            }
+          }
+
+          <!-- Timeline -->
+          @if (activities().length === 0) {
+            <div class="empty-tab">
+              <mat-icon>event_note</mat-icon>
+              <p>No activities yet</p>
+            </div>
+          } @else {
+            <ul class="timeline" role="list">
+              @for (a of activities(); track trackById($index, a)) {
+                <li class="timeline-item">
+                  <div class="timeline-icon" [class]="'icon-' + a.type">
+                    <mat-icon>{{ getActivityIcon(a.type) }}</mat-icon>
+                  </div>
+                  <div class="timeline-content">
+                    <div class="timeline-header">
+                      <span class="timeline-title">{{ a.title }}</span>
+                      <span class="timeline-time">{{ a.createdAt | timeAgo }}</span>
+                    </div>
+                    @if (a.description) {
+                      <p class="timeline-desc">{{ a.description }}</p>
+                    }
+                    @if (a.createdByName) {
+                      <span class="timeline-author">by {{ a.createdByName }}</span>
+                    }
+                  </div>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </mat-tab>
+
+      <!-- ── Tab: Deals ─────────────────────────────────────────────────── -->
+      <mat-tab [label]="'Deals (' + deals().length + ')'">
+        <div class="tab-content">
+          @if (deals().length === 0) {
+            <div class="empty-tab">
+              <mat-icon>handshake</mat-icon>
+              <p>No deals linked to this contact</p>
+            </div>
+          } @else {
+            <ul class="deals-list" role="list">
+              @for (d of deals(); track trackById($index, d)) {
+                <li class="deal-item">
+                  <div class="deal-info">
+                    <span class="deal-title">{{ d.title }}</span>
+                    <span class="deal-stage">{{ d.stage | titlecase }}</span>
+                  </div>
+                  <span class="deal-value">{{ formatCurrency(d.value, d.currency) }}</span>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+
+  </div>
+}
+
+<!-- ── Edit slide-in panel ───────────────────────────────────────────────── -->
+@if (showEdit()) {
+  <div class="form-overlay" (click)="showEdit.set(false)">
+    <div class="form-panel" (click)="$event.stopPropagation()">
+      <div class="form-panel-header">
+        <h2>Edit Contact</h2>
+        <button mat-icon-button (click)="showEdit.set(false)"><mat-icon>close</mat-icon></button>
+      </div>
+      <div class="form-panel-body">
+        <app-contact-form
+          [contact]="contact()"
+          [saving]="saving()"
+          (submitted)="onEditSubmit($event)"
+          (cancelled)="showEdit.set(false)"
+        />
+      </div>
+    </div>
+  </div>
+}

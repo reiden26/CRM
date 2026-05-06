@@ -1,0 +1,37 @@
+<mat-sidenav-container class="shell-container" [hasBackdrop]="isMobile()">
+
+  <!-- ── Sidenav ─────────────────────────────────────────────────────────── -->
+  <mat-sidenav
+    #sidenav
+    class="shell-sidenav"
+    [class.collapsed]="sidebarCollapsed()"
+    [mode]="sidenavMode()"
+    [opened]="sidenavOpened()"
+    fixedInViewport
+    fixedTopGap="0"
+  >
+    <app-sidebar
+      [collapsed]="sidebarCollapsed()"
+      (navItemClicked)="closeSidenavOnMobile()"
+    />
+  </mat-sidenav>
+
+  <!-- ── Main content ────────────────────────────────────────────────────── -->
+  <mat-sidenav-content class="shell-content">
+
+    <!-- Sticky navbar -->
+    <app-navbar
+      [sidebarCollapsed]="sidebarCollapsed()"
+      (menuToggle)="toggleSidenav()"
+    />
+
+    <!-- Page content -->
+    <main class="shell-main" role="main">
+      <div class="shell-main-inner">
+        <router-outlet />
+      </div>
+    </main>
+
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

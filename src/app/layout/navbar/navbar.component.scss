@@ -1,0 +1,254 @@
+// ── Navbar ────────────────────────────────────────────────────────────────────
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 8px 0 4px;
+  background-color: var(--crm-navbar-bg, #ffffff);
+  border-bottom: 1px solid var(--crm-border);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+// ── Left section ──────────────────────────────────────────────────────────────
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.menu-btn {
+  color: var(--crm-text-secondary);
+  flex-shrink: 0;
+
+  &:hover {
+    color: var(--crm-primary);
+  }
+}
+
+// ── Breadcrumb ────────────────────────────────────────────────────────────────
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.breadcrumb-item {
+  font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+.breadcrumb-link {
+  color: var(--crm-text-secondary);
+  text-decoration: none;
+  transition: color 150ms ease;
+
+  &:hover {
+    color: var(--crm-primary);
+    text-decoration: underline;
+  }
+}
+
+.breadcrumb-current {
+  color: var(--crm-text-primary);
+  font-weight: 600;
+}
+
+.breadcrumb-sep {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+  color: var(--crm-text-secondary);
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+// ── Right section ─────────────────────────────────────────────────────────────
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+// ── User avatar button ────────────────────────────────────────────────────────
+
+.user-btn {
+  padding: 0;
+  width: 40px;
+  height: 40px;
+}
+
+.user-avatar-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--crm-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 2px solid var(--crm-border);
+  transition: border-color 150ms ease;
+
+  .user-btn:hover & {
+    border-color: var(--crm-accent);
+  }
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-initials {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+// ── User dropdown menu ────────────────────────────────────────────────────────
+
+::ng-deep .user-menu {
+  .mat-mdc-menu-panel {
+    min-width: 240px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+  }
+
+  .mat-mdc-menu-content {
+    padding: 0;
+  }
+}
+
+.user-menu-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--crm-bg-surface);
+  cursor: default;
+}
+
+.user-menu-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--crm-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  span {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+  }
+}
+
+.user-menu-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.user-menu-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--crm-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-menu-email {
+  font-size: 0.78rem;
+  color: var(--crm-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-menu-tenant {
+  font-size: 0.72rem;
+  color: var(--crm-accent);
+  font-weight: 500;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sign-out-item {
+  color: var(--crm-warn, #f44336) !important;
+
+  mat-icon {
+    color: var(--crm-warn, #f44336) !important;
+  }
+}
+
+// ── Mobile ────────────────────────────────────────────────────────────────────
+
+@media (max-width: 599px) {
+  .breadcrumb {
+    // On very small screens, only show the current page
+    .breadcrumb-link,
+    .breadcrumb-sep {
+      display: none;
+    }
+  }
+
+  .user-menu-email {
+    display: none;
+  }
+}
+
+// ── Push toggle menu item ─────────────────────────────────────────────────────
+
+.push-toggle-item {
+  &.push-active mat-icon {
+    color: var(--crm-accent);
+  }
+}
+
+.push-spinner {
+  display: inline-block;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+// ── Language toggle ───────────────────────────────────────────────────────────
+
+.lang-flag {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--crm-text-secondary);
+  line-height: 1;
+}

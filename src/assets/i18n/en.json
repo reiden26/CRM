@@ -1,0 +1,346 @@
+{
+  "APP": {
+    "NAME": "CRM Pro",
+    "LOADING": "Loading..."
+  },
+  "NAV": {
+    "DASHBOARD":     "Dashboard",
+    "CONTACTS":      "Contacts",
+    "COMPANIES":     "Companies",
+    "PIPELINE":      "Pipeline",
+    "TASKS":         "Tasks",
+    "REPORTS":       "Reports",
+    "SETTINGS":      "Settings",
+    "NOTIFICATIONS": "Notifications"
+  },
+  "AUTH": {
+    "LOGIN": {
+      "TITLE":           "Sign in",
+      "EMAIL":           "Email",
+      "PASSWORD":        "Password",
+      "FORGOT":          "Forgot password?",
+      "SUBMIT":          "Sign in",
+      "SUBMITTING":      "Signing in…",
+      "NO_ACCOUNT":      "Don't have an account?",
+      "SIGN_UP":         "Sign up",
+      "LOCKOUT":         "Too many failed attempts",
+      "LOCKOUT_MSG":     "Try again in {{time}}",
+      "ATTEMPTS_LEFT":   "{{count}} attempt(s) remaining before lockout"
+    },
+    "SIGNUP": {
+      "TITLE":           "Create account",
+      "FULL_NAME":       "Full name",
+      "EMAIL":           "Email",
+      "PASSWORD":        "Password",
+      "CONFIRM":         "Confirm password",
+      "SUBMIT":          "Create account",
+      "SUBMITTING":      "Creating account…",
+      "HAS_ACCOUNT":     "Already have an account?",
+      "SIGN_IN":         "Sign in",
+      "MIN_CHARS":       "Minimum 8 characters",
+      "MISMATCH":        "Passwords do not match"
+    },
+    "EMAIL_SENT": {
+      "TITLE":    "Check your email",
+      "SUBTITLE": "We sent a confirmation link to",
+      "HINT":     "Click the link in the email to activate your account. The link expires in 24 hours.",
+      "GO_LOGIN": "Go to login",
+      "SPAM":     "Didn't receive it? Check your spam folder or",
+      "TRY_AGAIN":"try again"
+    },
+    "CALLBACK": {
+      "VERIFYING": "Verifying your account…",
+      "SUCCESS":   "Email confirmed!",
+      "SUCCESS_MSG":"Your account is ready. Redirecting to dashboard…",
+      "ERROR":     "Verification failed",
+      "BACK":      "Back to login"
+    }
+  },
+  "ONBOARDING": {
+    "TITLE":       "Welcome to CRM Pro",
+    "SUBTITLE":    "Set up your workspace. This takes less than a minute.",
+    "COMPANY":     "Company name",
+    "SLUG":        "Workspace URL",
+    "SLUG_HINT":   "Only lowercase letters, numbers and hyphens. No spaces.",
+    "SUBMIT":      "Create workspace",
+    "SUBMITTING":  "Creating workspace…",
+    "TERMS":       "By creating a workspace you agree to our",
+    "TERMS_LINK":  "Terms of Service"
+  },
+  "DASHBOARD": {
+    "TITLE":          "Dashboard",
+    "GREETING_MORNING":   "Good morning",
+    "GREETING_AFTERNOON": "Good afternoon",
+    "GREETING_EVENING":   "Good evening",
+    "KPI": {
+      "CONTACTS":    "Total Contacts",
+      "DEALS":       "Active Deals",
+      "PIPELINE":    "Pipeline Value",
+      "CONVERSION":  "Conversion Rate",
+      "VS_PERIOD":   "vs last period"
+    },
+    "CHARTS": {
+      "DEALS_BY_STAGE": "Deals by Stage",
+      "REVENUE":        "Revenue {{year}}"
+    },
+    "ACTIVITY": {
+      "TITLE":    "Recent Activity",
+      "EMPTY":    "No recent activity",
+      "LOGGED":   "logged a"
+    },
+    "TASKS": {
+      "TITLE":    "My Tasks",
+      "EMPTY":    "All caught up! No pending tasks.",
+      "OVERDUE":  "Overdue"
+    },
+    "PERIOD": {
+      "THIS_MONTH":   "This month",
+      "LAST_MONTH":   "Last month",
+      "THIS_QUARTER": "This quarter",
+      "THIS_YEAR":    "This year",
+      "CUSTOM":       "Custom range",
+      "FROM":         "From",
+      "TO":           "To"
+    }
+  },
+  "CONTACTS": {
+    "TITLE":        "Contacts",
+    "NEW":          "New Contact",
+    "SEARCH":       "Search contacts",
+    "EXPORT":       "Export CSV",
+    "EMPTY":        "No contacts found",
+    "ADD_FIRST":    "Add your first contact",
+    "ARCHIVE_CONFIRM": "Archive this contact?",
+    "COLUMNS": {
+      "NAME":       "Name",
+      "COMPANY":    "Company",
+      "EMAIL":      "Email",
+      "PHONE":      "Phone",
+      "STATUS":     "Status",
+      "ASSIGNED":   "Assigned to",
+      "CREATED":    "Created"
+    },
+    "STATUS": {
+      "LEAD":     "Lead",
+      "PROSPECT": "Prospect",
+      "ACTIVE":   "Active",
+      "INACTIVE": "Inactive",
+      "ARCHIVED": "Archived"
+    },
+    "SOURCE": {
+      "WEBSITE":       "Website",
+      "REFERRAL":      "Referral",
+      "SOCIAL_MEDIA":  "Social Media",
+      "COLD_OUTREACH": "Cold Outreach",
+      "EVENT":         "Event",
+      "OTHER":         "Other"
+    },
+    "FORM": {
+      "FIRST_NAME":  "First name",
+      "LAST_NAME":   "Last name",
+      "EMAIL":       "Email",
+      "PHONE":       "Phone",
+      "COMPANY":     "Company",
+      "POSITION":    "Job title",
+      "SOURCE":      "Source",
+      "STATUS":      "Status",
+      "ASSIGNED_TO": "Assigned to",
+      "NOTES":       "Notes",
+      "SAVE":        "Save changes",
+      "CREATE":      "Create contact",
+      "CANCEL":      "Cancel",
+      "DRAFT_SAVED": "Draft saved"
+    },
+    "DETAIL": {
+      "TABS": {
+        "INFO":       "Information",
+        "ACTIVITIES": "Activities",
+        "DEALS":      "Deals",
+        "NOTES":      "Notes"
+      },
+      "ADD_ACTIVITY": "Add activity",
+      "NO_ACTIVITIES":"No activities yet",
+      "NO_DEALS":     "No deals linked",
+      "ARCHIVE":      "Archive"
+    },
+    "FILTERS": {
+      "ALL_STATUSES":  "All statuses",
+      "ANYONE":        "Anyone",
+      "ALL_COMPANIES": "All companies",
+      "CREATED_FROM":  "Created from",
+      "CREATED_TO":    "Created to",
+      "CLEAR":         "Clear filters"
+    },
+    "BULK": {
+      "SELECTED":  "{{count}} selected",
+      "ARCHIVE":   "Archive selected",
+      "CLEAR":     "Clear selection"
+    }
+  },
+  "PIPELINE": {
+    "TITLE":      "Pipeline",
+    "NEW_DEAL":   "New Deal",
+    "DEALS":      "deals",
+    "KANBAN":     "Kanban view",
+    "LIST":       "List view",
+    "MOVED_TO":   "Moved to \"{{stage}}\"",
+    "UNDO":       "Undo",
+    "MARK_LOST":  "Mark as lost",
+    "LOST_CONFIRM":"Mark this deal as lost?",
+    "COLUMNS": {
+      "DEAL":      "Deal",
+      "COMPANY":   "Company",
+      "STAGE":     "Stage",
+      "VALUE":     "Value",
+      "PROB":      "Probability",
+      "CLOSE":     "Close date",
+      "ASSIGNED":  "Assigned to"
+    },
+    "FORM": {
+      "TITLE":       "Deal title",
+      "CONTACT":     "Contact",
+      "COMPANY":     "Company",
+      "STAGE":       "Stage",
+      "VALUE":       "Value",
+      "CURRENCY":    "Currency",
+      "PROBABILITY": "Probability",
+      "CLOSE_DATE":  "Expected close date",
+      "ASSIGNED_TO": "Assigned to",
+      "DESCRIPTION": "Description",
+      "SAVE":        "Save changes",
+      "CREATE":      "Create deal",
+      "CANCEL":      "Cancel"
+    },
+    "FILTERS": {
+      "SEARCH":    "Search deals",
+      "ASSIGNED":  "Assigned to",
+      "MIN_VALUE": "Min value",
+      "MAX_VALUE": "Max value",
+      "FROM":      "Close from",
+      "TO":        "Close to",
+      "RESET":     "Reset filters"
+    }
+  },
+  "TASKS": {
+    "TITLE":   "Tasks",
+    "TYPES": {
+      "CALL":    "Call",
+      "EMAIL":   "Email",
+      "MEETING": "Meeting",
+      "TASK":    "Task",
+      "NOTE":    "Note"
+    }
+  },
+  "NOTIFICATIONS": {
+    "TITLE":        "Notifications",
+    "MARK_ALL":     "Mark all as read",
+    "VIEW_ALL":     "View all notifications",
+    "EMPTY_TITLE":  "You're all caught up!",
+    "EMPTY_SUB":    "No notifications yet.",
+    "LOADING":      "Loading notifications…",
+    "FILTERS": {
+      "ALL":     "All",
+      "UNREAD":  "Unread",
+      "INFO":    "Info",
+      "SUCCESS": "Success",
+      "WARNING": "Warning",
+      "ALERTS":  "Alerts"
+    }
+  },
+  "SETTINGS": {
+    "TITLE": "Settings",
+    "NAV": {
+      "COMPANY":    "Company Profile",
+      "USERS":      "Users",
+      "PIPELINE":   "Pipeline Stages",
+      "ROLES":      "Roles & Permissions",
+      "EMAIL_TPL":  "Email Templates",
+      "EMAIL_LOGS": "Email Logs",
+      "NOTIF_PREFS":"Notifications",
+      "AUDIT":      "Audit Log"
+    },
+    "LANGUAGE": {
+      "TITLE":    "Language",
+      "SUBTITLE": "Select the interface language.",
+      "ES":       "Español",
+      "EN":       "English"
+    }
+  },
+  "COMMON": {
+    "SAVE":        "Save",
+    "CANCEL":      "Cancel",
+    "DELETE":      "Delete",
+    "EDIT":        "Edit",
+    "VIEW":        "View",
+    "CREATE":      "Create",
+    "SEARCH":      "Search",
+    "FILTER":      "Filter",
+    "EXPORT":      "Export",
+    "IMPORT":      "Import",
+    "LOADING":     "Loading…",
+    "SAVING":      "Saving…",
+    "CONFIRM":     "Confirm",
+    "BACK":        "Back",
+    "CLOSE":       "Close",
+    "YES":         "Yes",
+    "NO":          "No",
+    "NONE":        "None",
+    "ALL":         "All",
+    "UNASSIGNED":  "Unassigned",
+    "UNKNOWN":     "Unknown",
+    "REQUIRED":    "This field is required.",
+    "INVALID_EMAIL":"Enter a valid email address.",
+    "MIN_LENGTH":  "Minimum {{count}} characters.",
+    "MAX_LENGTH":  "Maximum {{count}} characters.",
+    "JUST_NOW":    "just now",
+    "SIGN_OUT":    "Sign out",
+    "MY_PROFILE":  "My Profile",
+    "SETTINGS":    "Settings",
+    "THEME_LIGHT": "Light mode",
+    "THEME_DARK":  "Dark mode",
+    "PUSH_ENABLE": "Enable push notifications",
+    "PUSH_DISABLE":"Disable push notifications",
+    "PUSH_ACTIVE": "Active on this device",
+    "PUSH_BLOCKED":"Push blocked in browser",
+    "UPDATE_AVAILABLE": "A new version is available.",
+    "UPDATE_NOW":  "Update now",
+    "GO_DASHBOARD":"Go to Dashboard",
+    "GO_BACK":     "Go back"
+  },
+  "ERRORS": {
+    "GENERIC":       "An unexpected error occurred. Please try again.",
+    "NETWORK":       "Network error. Check your connection.",
+    "UNAUTHORIZED":  "Unauthorized. Please sign in.",
+    "FORBIDDEN":     "You don't have permission to perform this action.",
+    "NOT_FOUND":     "The requested resource was not found.",
+    "SERVER":        "Server error. Please try again later.",
+    "INVALID_CREDS": "Incorrect email or password.",
+    "EMAIL_UNCONFIRMED": "Please confirm your email before signing in.",
+    "ALREADY_REGISTERED": "An account with this email already exists.",
+    "RATE_LIMIT":    "Too many attempts. Please wait.",
+    "TIMEOUT":       "Request timed out. Please try again."
+  },
+  "FORBIDDEN_PAGE": {
+    "TITLE":    "Access Denied",
+    "SUBTITLE": "You don't have permission to view this page.",
+    "REQUIRED": "Required",
+    "YOUR_ROLE":"Your role",
+    "PATH":     "Attempted path",
+    "HELP":     "If you believe this is a mistake, contact your workspace administrator."
+  },
+  "NOT_FOUND_PAGE": {
+    "TITLE":    "Page not found",
+    "SUBTITLE": "The page you're looking for doesn't exist or was moved."
+  },
+  "CONFIRM_DIALOG": {
+    "CONFIRM": "Confirm",
+    "CANCEL":  "Cancel"
+  },
+  "INACTIVITY": {
+    "TITLE":     "Session expiring soon",
+    "MESSAGE":   "Your session will expire due to inactivity.",
+    "REMAINING": "Time remaining:",
+    "STAY":      "Stay signed in",
+    "LOGOUT":    "Sign out"
+  }
+}

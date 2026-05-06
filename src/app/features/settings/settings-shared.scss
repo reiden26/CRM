@@ -1,0 +1,31 @@
+// ── Shared styles for all settings pages ─────────────────────────────────────
+// Import this in each settings page component's SCSS:
+//   @use '../../settings-shared' as *;
+
+.settings-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.settings-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.settings-page-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--crm-text-primary);
+  margin: 0 0 2px;
+}
+
+.settings-page-sub {
+  font-size: 0.82rem;
+  color: var(--crm-text-secondary);
+  margin: 0;
+}

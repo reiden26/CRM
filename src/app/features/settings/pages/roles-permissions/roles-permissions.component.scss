@@ -1,0 +1,116 @@
+@use '../../settings-shared' as *;
+
+.role-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.role-card { border-radius: 12px; box-shadow: var(--crm-shadow); }
+
+.role-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px !important;
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  align-self: flex-start;
+}
+
+.role-desc {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--crm-text-secondary);
+  line-height: 1.4;
+}
+
+.matrix-card {
+  border-radius: 12px;
+  box-shadow: var(--crm-shadow);
+  overflow: hidden;
+}
+
+.matrix-wrap { overflow-x: auto; }
+
+.matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+
+  th, td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--crm-border);
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  thead th {
+    background: var(--crm-bg-surface);
+    font-weight: 700;
+    font-size: 0.78rem;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--crm-bg-surface); }
+}
+
+.resource-col { text-align: left !important; width: 140px; }
+.role-col     { min-width: 120px; }
+
+.resource-name {
+  text-align: left !important;
+  font-weight: 600;
+  color: var(--crm-text-primary);
+}
+
+.perm-cell { padding: 8px 12px !important; }
+
+.action-dots {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+}
+
+.action-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: var(--crm-border);
+  color: var(--crm-text-secondary);
+  cursor: default;
+
+  &.allowed {
+    background: rgba(34, 197, 94, 0.15);
+    color: #16a34a;
+  }
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--crm-border);
+  background: var(--crm-bg-surface);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--crm-text-secondary);
+}

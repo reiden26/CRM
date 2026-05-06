@@ -1,0 +1,38 @@
+<mat-card class="kpi-card">
+  <mat-card-content class="kpi-body">
+
+    @if (loading) {
+      <!-- Skeleton state -->
+      <div class="kpi-skeleton">
+        <app-skeleton width="40px" height="40px" variant="circle" />
+        <div class="kpi-skeleton-text">
+          <app-skeleton width="60%" height="14px" />
+          <app-skeleton width="80%" height="28px" />
+          <app-skeleton width="50%" height="12px" />
+        </div>
+      </div>
+    } @else {
+      <!-- Loaded state -->
+      <div class="kpi-icon-wrap" [style.background]="iconColor + '18'">
+        <mat-icon [style.color]="iconColor">{{ icon }}</mat-icon>
+      </div>
+
+      <div class="kpi-content">
+        <span class="kpi-label">{{ label }}</span>
+        <span class="kpi-value">{{ value }}</span>
+
+        @if (subtitle) {
+          <span class="kpi-subtitle">{{ subtitle }}</span>
+        }
+
+        @if (change !== null) {
+          <div class="kpi-change" [style.color]="changeColor">
+            <mat-icon class="change-icon">{{ changeIcon }}</mat-icon>
+            <span>{{ changeLabel }}</span>
+          </div>
+        }
+      </div>
+    }
+
+  </mat-card-content>
+</mat-card>

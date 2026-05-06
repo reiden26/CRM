@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CRM</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- manifest.webmanifest is only useful in production with real icons -->
+  <!-- <link rel="manifest" href="manifest.webmanifest"> -->
+
+  <!-- ── Security headers (meta-tag equivalents) ──────────────────────────── -->
+
+  <!--
+    Content Security Policy
+    - default-src 'self'          : only load resources from same origin
+    - script-src 'self'           : no inline scripts, no eval
+    - style-src 'self' 'unsafe-inline' : Angular Material needs inline styles
+    - img-src 'self' data: blob: https: : allow images from HTTPS + data URIs
+    - connect-src 'self' https://*.supabase.co wss://*.supabase.co
+                                  : allow Supabase REST + Realtime WebSocket
+    - font-src 'self' https://fonts.gstatic.com
+    - frame-src 'none'            : no iframes
+    - object-src 'none'           : no plugins
+    - base-uri 'self'             : prevent base tag injection
+    - form-action 'self'          : forms only submit to same origin
+  -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    img-src 'self' data: blob: https:;
+    connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.resend.com;
+    font-src 'self' https://fonts.gstatic.com;
+    frame-src 'none';
+    frame-ancestors 'none';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+  ">
+
+  <!-- Prevent MIME-type sniffing -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <!-- Prevent clickjacking — use CSP frame-ancestors instead of X-Frame-Options
+       X-Frame-Options does NOT work as a meta tag, only as an HTTP header.
+       frame-ancestors 'none' in CSP achieves the same effect and IS valid here. -->
+
+  <!-- Enable XSS filter in older browsers -->
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+
+  <!-- Referrer policy — don't leak URL to third parties -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- Permissions policy — disable unused browser features -->
+  <meta http-equiv="Permissions-Policy" content="
+    camera=(),
+    microphone=(),
+    geolocation=(),
+    payment=(),
+    usb=()
+  ">
+
+  <!-- Theme color for PWA -->
+  <meta name="theme-color" content="#1a237e">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>

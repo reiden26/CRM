@@ -1,0 +1,129 @@
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate class="contact-form">
+
+  <!-- Draft saved indicator -->
+  @if (draftSaved()) {
+    <div class="draft-badge">
+      <mat-icon>save</mat-icon> Draft saved
+    </div>
+  }
+
+  <div class="form-grid">
+
+    <!-- First name -->
+    <mat-form-field appearance="outline">
+      <mat-label>First name *</mat-label>
+      <input matInput formControlName="firstName" autocomplete="given-name" />
+      @if (getError('firstName'); as err) { <mat-error>{{ err }}</mat-error> }
+    </mat-form-field>
+
+    <!-- Last name -->
+    <mat-form-field appearance="outline">
+      <mat-label>Last name *</mat-label>
+      <input matInput formControlName="lastName" autocomplete="family-name" />
+      @if (getError('lastName'); as err) { <mat-error>{{ err }}</mat-error> }
+    </mat-form-field>
+
+    <!-- Email -->
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" type="email" autocomplete="email" />
+      <mat-icon matPrefix>email</mat-icon>
+      @if (getError('email'); as err) { <mat-error>{{ err }}</mat-error> }
+    </mat-form-field>
+
+    <!-- Phone -->
+    <mat-form-field appearance="outline">
+      <mat-label>Phone</mat-label>
+      <input matInput formControlName="phone" type="tel" autocomplete="tel" />
+      <mat-icon matPrefix>phone</mat-icon>
+    </mat-form-field>
+
+    <!-- Company autocomplete -->
+    <mat-form-field appearance="outline" class="span-2">
+      <mat-label>Company</mat-label>
+      <input
+        matInput
+        formControlName="companySearch"
+        [matAutocomplete]="companyAuto"
+        placeholder="Search companies…"
+      />
+      <mat-icon matPrefix>business</mat-icon>
+      @if (form.get('companyId')?.value) {
+        <button matSuffix mat-icon-button (click)="clearCompany()" type="button" aria-label="Clear company">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+      <mat-autocomplete #companyAuto="matAutocomplete" [displayWith]="displayCompanyName">
+        @for (c of filteredCompanies(); track c.id) {
+          <mat-option [value]="c.name" (click)="onCompanySelected(c.id, c.name)">
+            {{ c.name }}
+          </mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <!-- Position -->
+    <mat-form-field appearance="outline">
+      <mat-label>Job title</mat-label>
+      <input matInput formControlName="position" />
+      <mat-icon matPrefix>work</mat-icon>
+    </mat-form-field>
+
+    <!-- Source -->
+    <mat-form-field appearance="outline">
+      <mat-label>Source</mat-label>
+      <mat-select formControlName="source">
+        <mat-option [value]="null">Unknown</mat-option>
+        @for (opt of sourceOptions; track opt.value) {
+          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Status -->
+    <mat-form-field appearance="outline">
+      <mat-label>Status *</mat-label>
+      <mat-select formControlName="status">
+        @for (opt of statusOptions; track opt.value) {
+          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+        }
+      </mat-select>
+      @if (getError('status'); as err) { <mat-error>{{ err }}</mat-error> }
+    </mat-form-field>
+
+    <!-- Assigned to -->
+    <mat-form-field appearance="outline">
+      <mat-label>Assigned to</mat-label>
+      <mat-select formControlName="assignedTo">
+        <mat-option [value]="null">Unassigned</mat-option>
+        @for (m of teamMembers(); track m.id) {
+          <mat-option [value]="m.id">{{ m.fullName }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Notes -->
+    <mat-form-field appearance="outline" class="span-2">
+      <mat-label>Notes</mat-label>
+      <textarea matInput formControlName="notes" rows="3" placeholder="Add notes…"></textarea>
+    </mat-form-field>
+
+  </div>
+
+  <!-- Actions -->
+  <div class="form-actions">
+    <button mat-stroked-button type="button" (click)="cancel()">{{ 'CONTACTS.FORM.CANCEL' | translate }}</button>
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="form.invalid || saving"
+    >
+      @if (saving) {
+        <mat-spinner diameter="18" />
+      }
+      {{ isEditMode() ? ('CONTACTS.FORM.SAVE' | translate) : ('CONTACTS.FORM.CREATE' | translate) }}
+    </button>
+  </div>
+
+</form>

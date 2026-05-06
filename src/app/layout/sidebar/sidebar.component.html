@@ -1,0 +1,72 @@
+<nav class="sidebar" [class.collapsed]="collapsed" aria-label="Main navigation">
+
+  <!-- ── Logo / Brand ──────────────────────────────────────────────────── -->
+  <div class="sidebar-brand">
+    <div class="brand-icon">
+      <span class="brand-icon-letter">C</span>
+    </div>
+    @if (!collapsed) {
+      <div class="brand-text">
+        <span class="brand-name">CRM</span>
+        @if (tenantName()) {
+          <span class="brand-tenant">{{ tenantName() }}</span>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- ── Navigation items ──────────────────────────────────────────────── -->
+  <mat-nav-list class="sidebar-nav" disableRipple>
+
+    @for (item of visibleItems(); track trackByRoute($index, item)) {
+
+      <!-- Optional divider -->
+      @if (item.dividerBefore) {
+        <mat-divider class="nav-divider" />
+      }
+
+      <!-- Nav item -->
+      <a
+        mat-list-item
+        class="nav-item"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+        [matTooltip]="collapsed ? (item.label | translate) : ''"
+        matTooltipPosition="right"
+        (click)="onNavClick()"
+        [attr.aria-label]="item.label"
+      >
+        <mat-icon matListItemIcon class="nav-icon">{{ item.icon }}</mat-icon>
+
+        @if (!collapsed) {
+          <span matListItemTitle class="nav-label">{{ item.label | translate }}</span>
+        }
+      </a>
+
+    }
+
+  </mat-nav-list>
+
+  <!-- ── Spacer ─────────────────────────────────────────────────────────── -->
+  <div class="sidebar-spacer"></div>
+
+  <!-- ── User footer ───────────────────────────────────────────────────── -->
+  <div class="sidebar-footer" [class.collapsed]="collapsed">
+    <div class="user-avatar" [attr.aria-label]="profile()?.fullName">
+      @if (profile()?.avatarUrl) {
+        <img [src]="profile()!.avatarUrl!" [alt]="profile()!.fullName" class="avatar-img" />
+      } @else {
+        <span class="avatar-initials">{{ userInitials() }}</span>
+      }
+    </div>
+
+    @if (!collapsed) {
+      <div class="user-info">
+        <span class="user-name">{{ profile()?.fullName }}</span>
+        <span class="user-role">{{ profile()?.role | titlecase }}</span>
+      </div>
+    }
+  </div>
+
+</nav>

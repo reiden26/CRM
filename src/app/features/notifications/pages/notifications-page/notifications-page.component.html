@@ -1,0 +1,228 @@
+<div class="notif-page">
+
+  <!-- ── Page header ──────────────────────────────────────────────────────── -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">{{ 'NOTIFICATIONS.TITLE' | translate }}</h1>
+      @if (unreadCount() > 0) {
+        <span class="unread-chip">{{ unreadCount() }} unread</span>
+      }
+    </div>
+    <div class="page-header-right">
+      @if (unreadCount() > 0) {
+        <button mat-stroked-button (click)="markAllAsRead()" [disabled]="loading()">
+          <mat-icon>done_all</mat-icon>
+          {{ 'NOTIFICATIONS.MARK_ALL' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- ── Filter tabs ──────────────────────────────────────────────────────── -->
+  <div class="filter-tabs" role="tablist" aria-label="Notification filters">
+    @for (opt of filterOptions; track opt.value) {
+      <button
+        class="filter-tab"
+        [class.active]="activeFilter() === opt.value"
+        role="tab"
+        [attr.aria-selected]="activeFilter() === opt.value"
+        (click)="setFilter(opt.value)"
+      >
+        <mat-icon class="tab-icon">{{ opt.icon }}</mat-icon>
+        <span>{{ opt.label }}</span>
+        @if (getFilterCount(opt.value) > 0) {
+          <span class="tab-count">{{ getFilterCount(opt.value) }}</span>
+        }
+      </button>
+    }
+  </div>
+
+  <!-- ── Bulk action bar ──────────────────────────────────────────────────── -->
+  @if (selectedCount() > 0) {
+    <div class="bulk-bar" role="toolbar" aria-label="Bulk actions">
+      <span class="bulk-count">{{ selectedCount() }} selected</span>
+      <div class="bulk-actions">
+        @if (hasSelectedUnread()) {
+          <button
+            mat-stroked-button
+            (click)="bulkMarkAsRead()"
+            [disabled]="bulkLoading()"
+          >
+            <mat-icon>done</mat-icon>
+            Mark as read
+          </button>
+        }
+        <button
+          mat-stroked-button
+          color="warn"
+          (click)="bulkDelete()"
+          [disabled]="bulkLoading()"
+        >
+          @if (bulkLoading()) {
+            <mat-spinner diameter="16" />
+          } @else {
+            <mat-icon>delete_outline</mat-icon>
+          }
+          Delete
+        </button>
+        <button mat-icon-button (click)="clearSelection()" matTooltip="Clear selection">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ── Content ──────────────────────────────────────────────────────────── -->
+  <div class="notif-content">
+
+    <!-- Loading -->
+    @if (loading()) {
+      <div class="state-container">
+        <mat-spinner diameter="40" />
+        <p>{{ 'NOTIFICATIONS.LOADING' | translate }}</p>
+      </div>
+    }
+
+    <!-- Empty state -->
+    @if (!loading() && filteredNotifications().length === 0) {
+      <div class="state-container empty">
+        <mat-icon class="empty-icon">notifications_none</mat-icon>
+        <h3>No notifications</h3>
+        <p>
+          @if (activeFilter() === 'unread') {
+            You have no unread notifications.
+          } @else if (activeFilter() !== 'all') {
+            No {{ activeFilter() }} notifications found.
+          } @else {
+            You're all caught up! No notifications yet.
+          }
+        </p>
+        @if (activeFilter() !== 'all') {
+          <button mat-stroked-button (click)="setFilter('all')">
+            View all notifications
+          </button>
+        }
+      </div>
+    }
+
+    <!-- Notification list -->
+    @if (!loading() && pagedNotifications().length > 0) {
+
+      <!-- List header with select-all -->
+      <div class="list-header">
+        <mat-checkbox
+          class="select-all-cb"
+          [checked]="allPageSelected()"
+          [indeterminate]="somePageSelected()"
+          (change)="toggleSelectAll()"
+          aria-label="Select all on this page"
+        />
+        <span class="list-header-label">
+          Showing {{ pagedNotifications().length }} of {{ totalFiltered() }}
+        </span>
+      </div>
+
+      <mat-divider />
+
+      <!-- Items -->
+      <ul class="notif-list" role="list">
+        @for (n of pagedNotifications(); track trackById($index, n)) {
+          <li
+            class="notif-item"
+            [class.unread]="!n.isRead"
+            [class.selected]="isSelected(n.id)"
+            [class]="'notif-item type-' + n.type"
+            role="listitem"
+          >
+            <!-- Checkbox -->
+            <mat-checkbox
+              class="item-checkbox"
+              [checked]="isSelected(n.id)"
+              (change)="toggleSelect(n.id)"
+              (click)="$event.stopPropagation()"
+              [attr.aria-label]="'Select: ' + n.title"
+            />
+
+            <!-- Clickable content area -->
+            <div
+              class="item-body"
+              matRipple
+              (click)="navigateToResource(n)"
+              (keydown.enter)="navigateToResource(n)"
+              tabindex="0"
+              role="button"
+              [attr.aria-label]="n.title"
+            >
+              <!-- Type icon -->
+              <div class="item-icon-wrap" [class]="'icon-' + n.type">
+                <mat-icon class="item-icon">{{ getTypeIcon(n.type) }}</mat-icon>
+              </div>
+
+              <!-- Text content -->
+              <div class="item-text">
+                <div class="item-title-row">
+                  <span class="item-title">{{ n.title }}</span>
+                  @if (!n.isRead) {
+                    <span class="unread-dot" aria-label="Unread"></span>
+                  }
+                </div>
+                @if (n.body) {
+                  <p class="item-body-text">{{ n.body }}</p>
+                }
+                <div class="item-meta">
+                  <span class="item-time">{{ n.createdAt | timeAgo }}</span>
+                  @if (n.resourceType) {
+                    <span class="item-resource">
+                      <mat-icon class="resource-icon">link</mat-icon>
+                      {{ n.resourceType | titlecase }}
+                    </span>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Item actions -->
+            <div class="item-actions">
+              @if (!n.isRead) {
+                <button
+                  mat-icon-button
+                  class="item-action-btn"
+                  matTooltip="Mark as read"
+                  (click)="markAsRead(n, $event)"
+                >
+                  <mat-icon>done</mat-icon>
+                </button>
+              }
+              <button
+                mat-icon-button
+                class="item-action-btn delete-btn"
+                matTooltip="Delete"
+                (click)="deleteOne(n.id, $event)"
+              >
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            </div>
+
+          </li>
+        }
+      </ul>
+
+      <!-- Paginator -->
+      @if (totalFiltered() > pageSize()) {
+        <mat-divider />
+        <mat-paginator
+          class="notif-paginator"
+          [length]="totalFiltered()"
+          [pageSize]="pageSize()"
+          [pageIndex]="pageIndex()"
+          [pageSizeOptions]="[10, 20, 50]"
+          (page)="onPageChange($event)"
+          aria-label="Notifications pagination"
+        />
+      }
+
+    }
+
+  </div>
+
+</div>

@@ -1,0 +1,90 @@
+<div class="onboarding-wrapper">
+  <mat-card class="onboarding-card">
+
+    <!-- Header -->
+    <mat-card-header class="onboarding-header">
+      <div class="onboarding-logo">
+        <mat-icon class="logo-icon">business</mat-icon>
+      </div>
+      <mat-card-title>{{ 'ONBOARDING.TITLE' | translate }}</mat-card-title>
+      <mat-card-subtitle>
+        {{ 'ONBOARDING.SUBTITLE' | translate }}
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+
+      <!-- Error banner -->
+      @if (error()) {
+        <div class="error-banner" role="alert">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ error() }}</span>
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+
+        <!-- Company name -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'ONBOARDING.COMPANY' | translate }}</mat-label>
+          <input
+            matInput
+            formControlName="name"
+            placeholder="Acme Corporation"
+            autocomplete="organization"
+            (input)="onNameInput($event)"
+          />
+          <mat-icon matSuffix>domain</mat-icon>
+          @if (getFieldError('name'); as err) {
+            <mat-error>{{ err }}</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Workspace URL (slug) -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'ONBOARDING.SLUG' | translate }}</mat-label>
+          <span matTextPrefix class="slug-prefix">crm.app/&nbsp;</span>
+          <input
+            matInput
+            formControlName="slug"
+            placeholder="acme-corporation"
+            autocomplete="off"
+          />
+          <mat-hint>
+            {{ 'ONBOARDING.SLUG_HINT' | translate }}
+          </mat-hint>
+          @if (getFieldError('slug'); as err) {
+            <mat-error>{{ err }}</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Submit -->
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          class="submit-btn"
+          [disabled]="form.invalid || loading()"
+        >
+          @if (loading()) {
+            <mat-spinner diameter="20" />
+            <span>{{ 'ONBOARDING.SUBMITTING' | translate }}</span>
+          } @else {
+            <mat-icon>rocket_launch</mat-icon>
+            <span>{{ 'ONBOARDING.SUBMIT' | translate }}</span>
+          }
+        </button>
+
+      </form>
+    </mat-card-content>
+
+    <!-- Footer -->
+    <mat-card-actions class="onboarding-footer">
+      <p class="footer-note">
+        By creating a workspace you agree to our
+        <a href="/terms" target="_blank">Terms of Service</a>.
+      </p>
+    </mat-card-actions>
+
+  </mat-card>
+</div>

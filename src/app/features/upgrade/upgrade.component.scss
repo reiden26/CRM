@@ -1,0 +1,124 @@
+.upgrade-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 24px;
+  background: var(--crm-bg-surface);
+}
+
+.upgrade-header {
+  text-align: center;
+  margin-bottom: 40px;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 12px 0 8px;
+  }
+}
+
+.upgrade-icon {
+  font-size: 56px;
+  width: 56px;
+  height: 56px;
+  color: var(--crm-primary);
+}
+
+.limit-message {
+  color: var(--crm-text-secondary);
+  font-size: 1rem;
+  max-width: 480px;
+  margin: 0 auto 12px;
+}
+
+.usage-badge {
+  display: inline-block;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  border-radius: 20px;
+  padding: 4px 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  width: 100%;
+  max-width: 720px;
+  margin-bottom: 32px;
+}
+
+.plan-card {
+  border-radius: 16px;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  }
+
+  &.highlighted {
+    border: 2px solid var(--crm-primary);
+    box-shadow: 0 8px 24px rgba(26, 35, 126, 0.15);
+  }
+}
+
+.popular-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--crm-primary);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 16px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.price {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  color: var(--crm-primary) !important;
+}
+
+.features-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 0.9rem;
+    color: var(--crm-text-primary);
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      color: var(--crm-accent);
+    }
+  }
+}
+
+.upgrade-btn {
+  width: 100%;
+  height: 44px;
+  font-weight: 600;
+}
+
+.back-btn {
+  color: var(--crm-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

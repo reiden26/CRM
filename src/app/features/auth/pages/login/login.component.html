@@ -1,0 +1,151 @@
+<div class="auth-page">
+
+  <!-- ── Left panel ─────────────────────────────────────────────────────── -->
+  @if (!isMobile()) {
+    <div class="auth-left" @slideInLeft>
+      <div class="auth-left-content">
+
+        <mat-icon class="auth-logo-icon">insights</mat-icon>
+        <h1 class="auth-app-name">CRM Pro</h1>
+        <p class="auth-tagline">Gestiona tus relaciones,<br>acelera tus ventas</p>
+        <div class="auth-separator"></div>
+
+        <div class="auth-features">
+          <div class="auth-feature">
+            <mat-icon>people_alt</mat-icon>
+            <span>Contactos y empresas centralizados</span>
+          </div>
+          <div class="auth-feature">
+            <mat-icon>trending_up</mat-icon>
+            <span>Pipeline visual de ventas</span>
+          </div>
+          <div class="auth-feature">
+            <mat-icon>bar_chart</mat-icon>
+            <span>Reportes y métricas en tiempo real</span>
+          </div>
+        </div>
+
+      </div>
+      <span class="auth-copyright">© 2025 CRM Pro</span>
+    </div>
+  }
+
+  <!-- ── Right panel (form) ─────────────────────────────────────────────── -->
+  <div class="auth-right" @slideInRight>
+    <div class="auth-form-container" @fadeInUp>
+
+      <!-- Mobile logo -->
+      @if (isMobile()) {
+        <div class="auth-mobile-header">
+          <div class="mobile-logo-icon">
+            <mat-icon>insights</mat-icon>
+          </div>
+          <span class="mobile-app-name">CRM Pro</span>
+        </div>
+      }
+
+      <!-- Header -->
+      <div class="auth-form-header form-header">
+        <h2 class="auth-form-title">Bienvenido de nuevo</h2>
+        <p class="auth-form-subtitle">Ingresa tus datos para continuar</p>
+      </div>
+
+      <!-- Lockout banner -->
+      @if (isLocked()) {
+        <div class="auth-error" @fadeIn style="margin-bottom:16px">
+          <mat-icon>lock_clock</mat-icon>
+          <div>
+            <strong>Demasiados intentos fallidos</strong><br>
+            <span>Intenta de nuevo en {{ formatCountdown(countdown()) }}</span>
+          </div>
+        </div>
+      }
+
+      <!-- Error banner -->
+      @if (errorMsg()) {
+        <div class="auth-error" @fadeIn style="margin-bottom:16px">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ errorMsg() }}</span>
+        </div>
+      }
+
+      <!-- Attempts warning -->
+      @if (!isLocked() && remaining() < 3 && remaining() > 0) {
+        <div class="auth-error" @fadeIn style="margin-bottom:16px; background:rgba(245,158,11,0.08); border-color:rgba(245,158,11,0.3); color:#92400e;">
+          <mat-icon style="color:#f59e0b">warning_amber</mat-icon>
+          <span>{{ remaining() }} intento(s) restante(s) antes del bloqueo.</span>
+        </div>
+      }
+
+      <!-- Form -->
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="auth-form">
+
+        <!-- Email -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Correo electrónico</mat-label>
+          <input matInput formControlName="email" type="email" autocomplete="email" />
+          <mat-icon matPrefix>mail_outline</mat-icon>
+          @if (form.get('email')?.touched && form.get('email')?.hasError('required')) {
+            <mat-error>El correo es obligatorio.</mat-error>
+          }
+          @if (form.get('email')?.touched && form.get('email')?.hasError('email')) {
+            <mat-error>Email no válido.</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Password -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Contraseña</mat-label>
+          <input matInput formControlName="password"
+            [type]="hidePass() ? 'password' : 'text'"
+            autocomplete="current-password" />
+          <mat-icon matPrefix>lock_outline</mat-icon>
+          <button matSuffix mat-icon-button type="button"
+            (click)="hidePass.set(!hidePass())"
+            [attr.aria-label]="hidePass() ? 'Mostrar contraseña' : 'Ocultar contraseña'">
+            <mat-icon>{{ hidePass() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (form.get('password')?.touched && form.get('password')?.hasError('required')) {
+            <mat-error>La contraseña es obligatoria.</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Forgot password -->
+        <div class="forgot-row">
+          <a routerLink="/auth/reset-password" class="forgot-link">
+            ¿Olvidaste tu contraseña?
+          </a>
+        </div>
+
+        <!-- Submit -->
+        <button mat-flat-button color="primary" type="submit" class="submit-btn"
+          [disabled]="form.invalid || loading() || isLocked()">
+          @if (loading()) {
+            <mat-spinner diameter="20" />
+            <span>Iniciando sesión…</span>
+          } @else {
+            <span>Iniciar sesión</span>
+          }
+        </button>
+
+      </form>
+
+      <!-- Divider (prepared for OAuth) -->
+      <div class="form-divider">o continúa con</div>
+
+      <!-- OAuth placeholder (disabled) -->
+      <button mat-stroked-button disabled style="width:100%;height:44px;border-radius:8px;opacity:0.4;cursor:not-allowed">
+        <mat-icon>g_mobiledata</mat-icon>
+        Google (próximamente)
+      </button>
+
+      <!-- Footer -->
+      <p class="form-footer">
+        ¿No tienes cuenta?
+        <a routerLink="/auth/signup">Regístrate</a>
+      </p>
+
+    </div>
+  </div>
+
+</div>

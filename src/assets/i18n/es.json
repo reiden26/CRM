@@ -1,0 +1,438 @@
+{
+  "APP": {
+    "NAME": "CRM Pro",
+    "LOADING": "Cargando..."
+  },
+  "NAV": {
+    "DASHBOARD":     "Dashboard",
+    "CONTACTS":      "Contactos",
+    "COMPANIES":     "Empresas",
+    "PIPELINE":      "Pipeline",
+    "TASKS":         "Tareas",
+    "REPORTS":       "Reportes",
+    "SETTINGS":      "Configuración",
+    "NOTIFICATIONS": "Notificaciones"
+  },
+  "AUTH": {
+    "LOGIN": {
+      "TITLE":           "Iniciar sesión",
+      "EMAIL":           "Correo electrónico",
+      "PASSWORD":        "Contraseña",
+      "FORGOT":          "¿Olvidaste tu contraseña?",
+      "SUBMIT":          "Iniciar sesión",
+      "SUBMITTING":      "Iniciando sesión…",
+      "NO_ACCOUNT":      "¿No tienes cuenta?",
+      "SIGN_UP":         "Regístrate",
+      "LOCKOUT":         "Demasiados intentos fallidos",
+      "LOCKOUT_MSG":     "Intenta de nuevo en {{time}}",
+      "ATTEMPTS_LEFT":   "{{count}} intento(s) restante(s) antes del bloqueo"
+    },
+    "SIGNUP": {
+      "TITLE":           "Crear cuenta",
+      "FULL_NAME":       "Nombre completo",
+      "EMAIL":           "Correo electrónico",
+      "PASSWORD":        "Contraseña",
+      "CONFIRM":         "Confirmar contraseña",
+      "SUBMIT":          "Crear cuenta",
+      "SUBMITTING":      "Creando cuenta…",
+      "HAS_ACCOUNT":     "¿Ya tienes cuenta?",
+      "SIGN_IN":         "Inicia sesión",
+      "MIN_CHARS":       "Mínimo 8 caracteres",
+      "MISMATCH":        "Las contraseñas no coinciden"
+    },
+    "EMAIL_SENT": {
+      "TITLE":    "Revisa tu correo",
+      "SUBTITLE": "Enviamos un enlace de confirmación a",
+      "HINT":     "Haz clic en el enlace del correo para activar tu cuenta. El enlace expira en 24 horas.",
+      "GO_LOGIN": "Ir al inicio de sesión",
+      "SPAM":     "¿No lo recibiste? Revisa tu carpeta de spam o",
+      "TRY_AGAIN":"intenta de nuevo"
+    },
+    "CALLBACK": {
+      "VERIFYING": "Verificando tu cuenta…",
+      "SUCCESS":   "¡Correo confirmado!",
+      "SUCCESS_MSG":"Tu cuenta está lista. Redirigiendo al dashboard…",
+      "ERROR":     "Verificación fallida",
+      "BACK":      "Volver al inicio de sesión"
+    }
+  },
+  "ONBOARDING": {
+    "TITLE":       "Bienvenido a CRM Pro",
+    "SUBTITLE":    "Configura tu espacio de trabajo. Tarda menos de un minuto.",
+    "COMPANY":     "Nombre de la empresa",
+    "SLUG":        "URL del espacio de trabajo",
+    "SLUG_HINT":   "Solo letras minúsculas, números y guiones. Sin espacios.",
+    "SUBMIT":      "Crear espacio de trabajo",
+    "SUBMITTING":  "Creando espacio de trabajo…",
+    "TERMS":       "Al crear un espacio de trabajo aceptas nuestros",
+    "TERMS_LINK":  "Términos de Servicio"
+  },
+  "DASHBOARD": {
+    "TITLE":          "Dashboard",
+    "GREETING_MORNING":   "Buenos días",
+    "GREETING_AFTERNOON": "Buenas tardes",
+    "GREETING_EVENING":   "Buenas noches",
+    "KPI": {
+      "CONTACTS":    "Total Contactos",
+      "DEALS":       "Deals Activos",
+      "PIPELINE":    "Valor del Pipeline",
+      "CONVERSION":  "Tasa de Conversión",
+      "VS_PERIOD":   "vs período anterior"
+    },
+    "CHARTS": {
+      "DEALS_BY_STAGE": "Deals por Etapa",
+      "REVENUE":        "Ingresos {{year}}"
+    },
+    "ACTIVITY": {
+      "TITLE":    "Actividad Reciente",
+      "EMPTY":    "Sin actividad reciente",
+      "LOGGED":   "registró un(a)"
+    },
+    "TASKS": {
+      "TITLE":    "Mis Tareas",
+      "EMPTY":    "¡Todo al día! Sin tareas pendientes.",
+      "OVERDUE":  "Vencida"
+    },
+    "PERIOD": {
+      "THIS_MONTH":   "Este mes",
+      "LAST_MONTH":   "Mes pasado",
+      "THIS_QUARTER": "Este trimestre",
+      "THIS_YEAR":    "Este año",
+      "CUSTOM":       "Rango personalizado",
+      "FROM":         "Desde",
+      "TO":           "Hasta"
+    }
+  },
+  "CONTACTS": {
+    "TITLE":        "Contactos",
+    "NEW":          "Nuevo Contacto",
+    "SEARCH":       "Buscar contactos",
+    "EXPORT":       "Exportar CSV",
+    "EMPTY":        "No se encontraron contactos",
+    "ADD_FIRST":    "Agrega tu primer contacto",
+    "ARCHIVE_CONFIRM": "¿Archivar este contacto?",
+    "COLUMNS": {
+      "NAME":       "Nombre",
+      "COMPANY":    "Empresa",
+      "EMAIL":      "Correo",
+      "PHONE":      "Teléfono",
+      "STATUS":     "Estado",
+      "ASSIGNED":   "Asignado a",
+      "CREATED":    "Creado"
+    },
+    "STATUS": {
+      "LEAD":     "Lead",
+      "PROSPECT": "Prospecto",
+      "ACTIVE":   "Activo",
+      "INACTIVE": "Inactivo",
+      "ARCHIVED": "Archivado"
+    },
+    "SOURCE": {
+      "WEBSITE":       "Sitio web",
+      "REFERRAL":      "Referido",
+      "SOCIAL_MEDIA":  "Redes sociales",
+      "COLD_OUTREACH": "Contacto frío",
+      "EVENT":         "Evento",
+      "OTHER":         "Otro"
+    },
+    "FORM": {
+      "FIRST_NAME":  "Nombre",
+      "LAST_NAME":   "Apellido",
+      "EMAIL":       "Correo electrónico",
+      "PHONE":       "Teléfono",
+      "COMPANY":     "Empresa",
+      "POSITION":    "Cargo",
+      "SOURCE":      "Fuente",
+      "STATUS":      "Estado",
+      "ASSIGNED_TO": "Asignado a",
+      "NOTES":       "Notas",
+      "SAVE":        "Guardar cambios",
+      "CREATE":      "Crear contacto",
+      "CANCEL":      "Cancelar",
+      "DRAFT_SAVED": "Borrador guardado"
+    },
+    "DETAIL": {
+      "TABS": {
+        "INFO":       "Información",
+        "ACTIVITIES": "Actividades",
+        "DEALS":      "Deals",
+        "NOTES":      "Notas"
+      },
+      "ADD_ACTIVITY": "Agregar actividad",
+      "NO_ACTIVITIES":"Sin actividades aún",
+      "NO_DEALS":     "Sin deals vinculados",
+      "ARCHIVE":      "Archivar"
+    },
+    "FILTERS": {
+      "ALL_STATUSES":  "Todos los estados",
+      "ANYONE":        "Cualquiera",
+      "ALL_COMPANIES": "Todas las empresas",
+      "CREATED_FROM":  "Creado desde",
+      "CREATED_TO":    "Creado hasta",
+      "CLEAR":         "Limpiar filtros"
+    },
+    "BULK": {
+      "SELECTED":  "{{count}} seleccionado(s)",
+      "ARCHIVE":   "Archivar seleccionados",
+      "CLEAR":     "Limpiar selección"
+    }
+  },
+  "PIPELINE": {
+    "TITLE":      "Pipeline",
+    "NEW_DEAL":   "Nuevo Deal",
+    "DEALS":      "deals",
+    "KANBAN":     "Vista Kanban",
+    "LIST":       "Vista Lista",
+    "MOVED_TO":   "Movido a \"{{stage}}\"",
+    "UNDO":       "Deshacer",
+    "MARK_LOST":  "Marcar como perdido",
+    "LOST_CONFIRM":"¿Marcar este deal como perdido?",
+    "COLUMNS": {
+      "DEAL":      "Deal",
+      "COMPANY":   "Empresa",
+      "STAGE":     "Etapa",
+      "VALUE":     "Valor",
+      "PROB":      "Probabilidad",
+      "CLOSE":     "Fecha cierre",
+      "ASSIGNED":  "Asignado a"
+    },
+    "FORM": {
+      "TITLE":       "Título del deal",
+      "CONTACT":     "Contacto",
+      "COMPANY":     "Empresa",
+      "STAGE":       "Etapa",
+      "VALUE":       "Valor",
+      "CURRENCY":    "Moneda",
+      "PROBABILITY": "Probabilidad",
+      "CLOSE_DATE":  "Fecha de cierre esperada",
+      "ASSIGNED_TO": "Asignado a",
+      "DESCRIPTION": "Descripción",
+      "SAVE":        "Guardar cambios",
+      "CREATE":      "Crear deal",
+      "CANCEL":      "Cancelar"
+    },
+    "FILTERS": {
+      "SEARCH":    "Buscar deals",
+      "ASSIGNED":  "Asignado a",
+      "MIN_VALUE": "Valor mínimo",
+      "MAX_VALUE": "Valor máximo",
+      "FROM":      "Cierre desde",
+      "TO":        "Cierre hasta",
+      "RESET":     "Restablecer filtros"
+    }
+  },
+  "TASKS": {
+    "TITLE":   "Tareas",
+    "TYPES": {
+      "CALL":    "Llamada",
+      "EMAIL":   "Correo",
+      "MEETING": "Reunión",
+      "TASK":    "Tarea",
+      "NOTE":    "Nota"
+    }
+  },
+  "NOTIFICATIONS": {
+    "TITLE":        "Notificaciones",
+    "MARK_ALL":     "Marcar todas como leídas",
+    "VIEW_ALL":     "Ver todas las notificaciones",
+    "EMPTY_TITLE":  "¡Todo al día!",
+    "EMPTY_SUB":    "Sin notificaciones aún.",
+    "LOADING":      "Cargando notificaciones…",
+    "FILTERS": {
+      "ALL":     "Todas",
+      "UNREAD":  "No leídas",
+      "INFO":    "Info",
+      "SUCCESS": "Éxito",
+      "WARNING": "Advertencia",
+      "ALERTS":  "Alertas"
+    }
+  },
+  "SETTINGS": {
+    "TITLE": "Configuración",
+    "NAV": {
+      "COMPANY":    "Perfil de empresa",
+      "USERS":      "Usuarios",
+      "PIPELINE":   "Etapas del pipeline",
+      "ROLES":      "Roles y permisos",
+      "EMAIL_TPL":  "Plantillas de email",
+      "EMAIL_LOGS": "Registros de email",
+      "NOTIF_PREFS":"Notificaciones",
+      "AUDIT":      "Bitácora de cambios"
+    },
+    "COMPANY": {
+      "TITLE":    "Perfil de empresa",
+      "SUBTITLE": "Identidad del espacio de trabajo y configuración regional.",
+      "SAVE":     "Guardar cambios",
+      "LOGO":     {
+        "UPLOAD":  "Subir logo",
+        "REMOVE":  "Eliminar",
+        "HINT":    "PNG, JPG o SVG · Máx 2 MB"
+      },
+      "FIELDS": {
+        "NAME":     "Nombre de la empresa",
+        "INDUSTRY": "Industria",
+        "WEBSITE":  "Sitio web",
+        "PHONE":    "Teléfono",
+        "TIMEZONE": "Zona horaria",
+        "CURRENCY": "Moneda predeterminada"
+      },
+      "BRAND": {
+        "TITLE":   "Colores de marca",
+        "PRIMARY": "Color primario",
+        "ACCENT":  "Color de acento"
+      },
+      "BILLING": {
+        "TITLE":   "Plan y facturación",
+        "PLAN":    "Plan {{plan}}",
+        "UPGRADE": "Mejorar plan",
+        "FEATURES":"Funciones incluidas",
+        "USAGE": {
+          "CONTACTS": "Contactos",
+          "DEALS":    "Deals",
+          "USERS":    "Usuarios",
+          "UNLIMITED":"Ilimitado"
+        }
+      }
+    },
+    "USERS": {
+      "TITLE":    "Usuarios",
+      "SUBTITLE": "Gestiona los miembros del equipo y sus roles.",
+      "INVITE":   "Invitar usuario",
+      "ROLES": {
+        "ADMIN":   "Administrador",
+        "MANAGER": "Gerente",
+        "AGENT":   "Agente",
+        "VIEWER":  "Visualizador"
+      },
+      "STATUS": {
+        "ACTIVE":   "Activo",
+        "INACTIVE": "Inactivo"
+      },
+      "ACTIONS": {
+        "RESET_PWD": "Restablecer contraseña",
+        "SET_ROLE":  "Asignar como {{role}}"
+      },
+      "YOU": "Tú"
+    },
+    "PIPELINE": {
+      "TITLE":    "Etapas del Pipeline",
+      "SUBTITLE": "Arrastra para reordenar. Los cambios se guardan automáticamente.",
+      "ADD":      "Agregar nueva etapa",
+      "STAGE_NAME":"Nombre de la etapa",
+      "COLOR":    "Color",
+      "DELETE":   "Eliminar etapa",
+      "BADGES": {
+        "WON":     "Ganado",
+        "LOST":    "Perdido",
+        "DEFAULT": "Predeterminado"
+      }
+    },
+    "AUDIT": {
+      "TITLE":    "Bitácora de cambios",
+      "SUBTITLE": "Todos los cambios de datos en tu espacio de trabajo.",
+      "EXPORT":   "Exportar CSV",
+      "FILTERS": {
+        "USER":   "Usuario",
+        "TABLE":  "Tabla",
+        "FROM":   "Desde",
+        "TO":     "Hasta"
+      },
+      "COLUMNS": {
+        "ACTION": "Acción",
+        "USER":   "Usuario",
+        "TABLE":  "Tabla",
+        "RECORD": "ID Registro",
+        "IP":     "IP",
+        "TIME":   "Hora"
+      },
+      "DIFF": {
+        "BEFORE": "Antes",
+        "AFTER":  "Después",
+        "CLOSE":  "Cerrar"
+      }
+    },
+    "LANGUAGE": {
+      "TITLE":    "Idioma",
+      "SUBTITLE": "Selecciona el idioma de la interfaz.",
+      "ES":       "Español",
+      "EN":       "English"
+    }
+  },
+  "COMMON": {
+    "SAVE":        "Guardar",
+    "CANCEL":      "Cancelar",
+    "DELETE":      "Eliminar",
+    "EDIT":        "Editar",
+    "VIEW":        "Ver",
+    "CREATE":      "Crear",
+    "SEARCH":      "Buscar",
+    "FILTER":      "Filtrar",
+    "EXPORT":      "Exportar",
+    "IMPORT":      "Importar",
+    "LOADING":     "Cargando…",
+    "SAVING":      "Guardando…",
+    "CONFIRM":     "Confirmar",
+    "BACK":        "Volver",
+    "CLOSE":       "Cerrar",
+    "YES":         "Sí",
+    "NO":          "No",
+    "NONE":        "Ninguno",
+    "ALL":         "Todos",
+    "UNASSIGNED":  "Sin asignar",
+    "UNKNOWN":     "Desconocido",
+    "REQUIRED":    "Este campo es obligatorio.",
+    "INVALID_EMAIL":"Ingresa un correo válido.",
+    "MIN_LENGTH":  "Mínimo {{count}} caracteres.",
+    "MAX_LENGTH":  "Máximo {{count}} caracteres.",
+    "JUST_NOW":    "ahora mismo",
+    "SIGN_OUT":    "Cerrar sesión",
+    "MY_PROFILE":  "Mi perfil",
+    "SETTINGS":    "Configuración",
+    "THEME_LIGHT": "Modo claro",
+    "THEME_DARK":  "Modo oscuro",
+    "PUSH_ENABLE": "Activar notificaciones push",
+    "PUSH_DISABLE":"Desactivar notificaciones push",
+    "PUSH_ACTIVE": "Activo en este dispositivo",
+    "PUSH_BLOCKED":"Push bloqueado en el navegador",
+    "UPDATE_AVAILABLE": "Nueva versión disponible.",
+    "UPDATE_NOW":  "Actualizar ahora",
+    "GO_DASHBOARD":"Ir al Dashboard",
+    "GO_BACK":     "Volver"
+  },
+  "ERRORS": {
+    "GENERIC":       "Ocurrió un error inesperado. Por favor intenta de nuevo.",
+    "NETWORK":       "Error de conexión. Verifica tu internet.",
+    "UNAUTHORIZED":  "No autorizado. Por favor inicia sesión.",
+    "FORBIDDEN":     "No tienes permiso para realizar esta acción.",
+    "NOT_FOUND":     "El recurso solicitado no fue encontrado.",
+    "SERVER":        "Error del servidor. Intenta de nuevo más tarde.",
+    "INVALID_CREDS": "Credenciales incorrectas. Verifica tu correo y contraseña.",
+    "EMAIL_UNCONFIRMED": "Debes confirmar tu correo antes de iniciar sesión.",
+    "ALREADY_REGISTERED": "Ya existe una cuenta con este correo.",
+    "RATE_LIMIT":    "Demasiados intentos. Espera un momento.",
+    "TIMEOUT":       "La solicitud tardó demasiado. Intenta de nuevo."
+  },
+  "FORBIDDEN_PAGE": {
+    "TITLE":    "Acceso denegado",
+    "SUBTITLE": "No tienes permiso para ver esta página.",
+    "REQUIRED": "Requerido",
+    "YOUR_ROLE":"Tu rol",
+    "PATH":     "Ruta intentada",
+    "HELP":     "Si crees que es un error, contacta al administrador de tu espacio de trabajo."
+  },
+  "NOT_FOUND_PAGE": {
+    "TITLE":    "Página no encontrada",
+    "SUBTITLE": "La página que buscas no existe o fue movida."
+  },
+  "CONFIRM_DIALOG": {
+    "CONFIRM": "Confirmar",
+    "CANCEL":  "Cancelar"
+  },
+  "INACTIVITY": {
+    "TITLE":     "La sesión expirará pronto",
+    "MESSAGE":   "Tu sesión expirará por inactividad.",
+    "REMAINING": "Tiempo restante:",
+    "STAY":      "Mantener sesión",
+    "LOGOUT":    "Cerrar sesión"
+  }
+}

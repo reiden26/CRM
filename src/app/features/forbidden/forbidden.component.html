@@ -1,0 +1,60 @@
+<div class="forbidden-page">
+
+  <!-- Illustration -->
+  <div class="forbidden-illustration">
+    <div class="lock-circle">
+      <mat-icon class="lock-icon">lock</mat-icon>
+    </div>
+    <div class="error-code">403</div>
+  </div>
+
+  <!-- Content -->
+  <div class="forbidden-content">
+    <h1 class="forbidden-title">{{ 'FORBIDDEN_PAGE.TITLE' | translate }}</h1>
+    <p class="forbidden-subtitle">
+      {{ 'FORBIDDEN_PAGE.SUBTITLE' | translate }}
+    </p>
+
+    @if (detail()) {
+      <div class="detail-card">
+        <div class="detail-row">
+          <mat-icon class="detail-icon">shield</mat-icon>
+          <div>
+            <span class="detail-label">{{ 'FORBIDDEN_PAGE.REQUIRED' | translate }}</span>
+            <span class="detail-value">{{ detail()!.required }}</span>
+          </div>
+        </div>
+        <div class="detail-row">
+          <mat-icon class="detail-icon">person</mat-icon>
+          <div>
+            <span class="detail-label">{{ 'FORBIDDEN_PAGE.YOUR_ROLE' | translate }}</span>
+            <span class="detail-value role-value">{{ detail()!.current | titlecase }}</span>
+          </div>
+        </div>
+        @if (detail()!.from) {
+          <div class="detail-row">
+            <mat-icon class="detail-icon">link</mat-icon>
+            <div>
+              <span class="detail-label">{{ 'FORBIDDEN_PAGE.PATH' | translate }}</span>
+              <span class="detail-value path-value">/{{ detail()!.from }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <p class="help-text">
+      {{ 'FORBIDDEN_PAGE.HELP' | translate }}
+    </p>
+
+    <div class="forbidden-actions">
+      <button mat-flat-button color="primary" (click)="goDashboard()">
+        <mat-icon>home</mat-icon> Go to Dashboard
+      </button>
+      <button mat-stroked-button (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon> Go back
+      </button>
+    </div>
+  </div>
+
+</div>

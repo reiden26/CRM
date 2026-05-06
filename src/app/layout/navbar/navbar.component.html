@@ -1,0 +1,154 @@
+<header class="navbar" role="banner">
+
+  <!-- ── Left: hamburger + breadcrumb ─────────────────────────────────── -->
+  <div class="navbar-left">
+
+    <!-- Hamburger / collapse toggle -->
+    <button
+      mat-icon-button
+      class="menu-btn"
+      (click)="onMenuToggle()"
+      [matTooltip]="sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+      aria-label="Toggle navigation"
+    >
+      <mat-icon>{{ sidebarCollapsed ? 'menu_open' : 'menu' }}</mat-icon>
+    </button>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      @for (crumb of breadcrumbs(); track crumb.label; let last = $last) {
+
+        @if (!last) {
+          <!-- Linked crumb -->
+          <a
+            class="breadcrumb-item breadcrumb-link"
+            [routerLink]="crumb.url"
+          >{{ crumb.label }}</a>
+          <mat-icon class="breadcrumb-sep" aria-hidden="true">chevron_right</mat-icon>
+        } @else {
+          <!-- Current page (not a link) -->
+          <span class="breadcrumb-item breadcrumb-current" aria-current="page">
+            {{ crumb.label }}
+          </span>
+        }
+
+      }
+    </nav>
+
+  </div>
+
+  <!-- ── Right: actions ────────────────────────────────────────────────── -->
+  <div class="navbar-right">
+
+    <!-- Notification bell -->
+    <app-notification-bell />
+
+    <!-- Theme toggle -->
+    <button
+      mat-icon-button
+      (click)="themeService.toggle()"
+      [matTooltip]="themeService.isDark() ? ('COMMON.THEME_LIGHT' | translate) : ('COMMON.THEME_DARK' | translate)"
+      aria-label="Toggle color theme"
+    >
+      <mat-icon>{{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+    </button>
+
+    <!-- Language toggle -->
+    <button
+      mat-icon-button
+      (click)="langService.toggle()"
+      [matTooltip]="langService.isSpanish() ? 'Switch to English' : 'Cambiar a Español'"
+      aria-label="Toggle language"
+    >
+      <span class="lang-flag">{{ langService.isSpanish() ? 'ES' : 'EN' }}</span>
+    </button>
+
+    <!-- User avatar + menu -->
+    <button
+      mat-icon-button
+      class="user-btn"
+      [matMenuTriggerFor]="userMenu"
+      [matTooltip]="profile()?.fullName ?? 'Account'"
+      aria-label="User menu"
+    >
+      <div class="user-avatar-btn">
+        @if (profile()?.avatarUrl) {
+          <img
+            [src]="profile()!.avatarUrl!"
+            [alt]="profile()!.fullName"
+            class="avatar-img"
+          />
+        } @else {
+          <span class="avatar-initials">{{ userInitials() }}</span>
+        }
+      </div>
+    </button>
+
+    <!-- User dropdown menu -->
+    <mat-menu #userMenu="matMenu" class="user-menu" xPosition="before">
+
+      <!-- User info header -->
+      <div class="user-menu-header" (click)="$event.stopPropagation()">
+        <div class="user-menu-avatar">
+          @if (profile()?.avatarUrl) {
+            <img [src]="profile()!.avatarUrl!" [alt]="profile()!.fullName" />
+          } @else {
+            <span>{{ userInitials() }}</span>
+          }
+        </div>
+        <div class="user-menu-info">
+          <span class="user-menu-name">{{ profile()?.fullName }}</span>
+          <span class="user-menu-email">{{ userEmail() }}</span>
+          @if (tenantName()) {
+            <span class="user-menu-tenant">{{ tenantName() }}</span>
+          }
+        </div>
+      </div>
+
+      <mat-divider />
+
+      <!-- My profile -->
+      <button mat-menu-item (click)="goToProfile()">
+        <mat-icon>manage_accounts</mat-icon>
+        <span>My Profile</span>
+      </button>
+
+      <!-- Settings (visible to all) -->
+      <button mat-menu-item (click)="goToSettings()">
+        <mat-icon>settings</mat-icon>
+        <span>Settings</span>
+      </button>
+
+      <mat-divider />
+
+      <!-- Push notifications toggle -->
+      @if (pushMenuLabel()) {
+        <button
+          mat-menu-item
+          class="push-toggle-item"
+          [class.push-active]="isPushSubscribed()"
+          [disabled]="pushPermission() === 'denied' || pushToggling()"
+          (click)="togglePushNotifications()"
+        >
+          @if (pushToggling()) {
+            <mat-spinner diameter="18" class="push-spinner" />
+          } @else {
+            <mat-icon>{{ pushMenuIcon() }}</mat-icon>
+          }
+          <span>{{ pushMenuLabel() }}</span>
+        </button>
+      }
+
+      <mat-divider />
+
+      <!-- Sign out -->
+      <button mat-menu-item class="sign-out-item" (click)="signOut()">
+        <mat-icon>logout</mat-icon>
+        <span>Sign out</span>
+      </button>
+
+    </mat-menu>
+
+  </div>
+
+</header>

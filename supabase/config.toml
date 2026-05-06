@@ -1,0 +1,134 @@
+# ============================================================
+# Supabase project configuration
+# Docs: https://supabase.com/docs/guides/cli/config
+# ============================================================
+
+[project]
+# Your Supabase project reference ID (found in Project Settings → General)
+# project_id = "your-project-ref"
+
+# ============================================================
+# API
+# ============================================================
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+# ============================================================
+# DATABASE
+# ============================================================
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[db.pooler]
+enabled = false
+port = 54329
+pool_mode = "transaction"
+default_pool_size = 20
+max_client_conn = 100
+
+# ============================================================
+# STUDIO (local dashboard)
+# ============================================================
+[studio]
+enabled = true
+port = 54323
+api_url = "http://127.0.0.1"
+openai_api_key = "env(OPENAI_API_KEY)"
+
+# ============================================================
+# INBUCKET (local email testing)
+# ============================================================
+[inbucket]
+enabled = true
+port = 54324
+smtp_port = 54325
+pop3_port = 54326
+
+# ============================================================
+# STORAGE
+# ============================================================
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+# ============================================================
+# AUTH
+# ============================================================
+[auth]
+enabled = true
+site_url = "http://localhost:4200"
+additional_redirect_urls = [
+  "http://localhost:4200",
+  "http://localhost:4200/auth/callback"
+]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
+enable_signup = true
+enable_anonymous_sign_ins = false
+minimum_password_length = 8
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = true
+
+[auth.sms]
+enable_signup = false
+enable_confirmations = false
+
+# ============================================================
+# EDGE FUNCTIONS
+# ============================================================
+[functions.send-email]
+verify_jwt = true
+
+[functions.process-email-queue]
+# Cron jobs bypass JWT — secured by the service-role key internally
+verify_jwt = false
+
+[functions.send-push-notification]
+verify_jwt = true
+
+[functions.notify-on-deal-assigned]
+# Called by database webhook — no user JWT available
+verify_jwt = false
+
+# ============================================================
+# CRON JOBS
+# ============================================================
+# Requires pg_cron extension (enabled by default on Supabase cloud).
+# For local dev, trigger manually via: supabase functions invoke process-email-queue
+
+[cron]
+
+# Process email queue every 5 minutes
+[[cron.jobs]]
+name = "process-email-queue"
+schedule = "*/5 * * * *"
+command = """
+  select
+    net.http_post(
+      url    := current_setting('app.supabase_url') || '/functions/v1/process-email-queue',
+      headers := jsonb_build_object(
+        'Content-Type',  'application/json',
+        'Authorization', 'Bearer ' || current_setting('app.service_role_key')
+      ),
+      body   := '{}'::jsonb
+    );
+"""
+
+# ============================================================
+# ANALYTICS
+# ============================================================
+[analytics]
+enabled = false
+port = 54327
+vector_port = 54328
+backend = "postgres"
