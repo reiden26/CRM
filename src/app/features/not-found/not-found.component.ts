@@ -37,7 +37,13 @@ import { TranslateModule } from '@ngx-translate/core';
       align-items: center; justify-content: center; gap: 32px;
       padding: 40px 24px; background: var(--crm-bg-surface);
     }
-    .not-found-illustration { position: relative; display: flex; align-items: center; justify-content: center; }
+    .not-found-illustration {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
     .error-circle {
       width: 120px; height: 120px; border-radius: 50%;
       background: linear-gradient(135deg, rgba(2,136,209,0.12), rgba(2,136,209,0.06));
@@ -48,9 +54,9 @@ import { TranslateModule } from '@ngx-translate/core';
     @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
     .error-icon { font-size: 56px; width: 56px; height: 56px; color: #0288d1; }
     .error-code {
-      position: absolute; bottom: -12px; right: -12px;
       font-size: 4rem; font-weight: 900; color: rgba(2,136,209,0.12);
       line-height: 1; user-select: none;
+      margin-top: -4px;
     }
     .not-found-content { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; max-width: 400px; }
     h1 { font-size: 2rem; font-weight: 800; color: var(--crm-text-primary); margin: 0; }

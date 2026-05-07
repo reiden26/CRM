@@ -31,7 +31,6 @@ const CONTACT_SELECT = `
   id, tenant_id, company_id, first_name, last_name, email, phone,
   position, source, status, assigned_to, created_by, created_at, updated_at,
   companies ( name ),
-  profiles!contacts_assigned_to_fkey ( full_name ),
   contact_tags ( tags ( id, name, color ) )
 `.trim();
 
@@ -115,7 +114,8 @@ export class ContactsService implements OnDestroy {
         return { data: [], total: 0, page: pagination.page, pageSize: pagination.pageSize };
       }
 
-      const contacts = (data ?? []).map(mapContactRow);
+      const rows = await this._hydrateAssignedToNames(data ?? []);
+      const contacts = rows.map(mapContactRow);
       this._contacts.set(contacts);
       this._total.set(count ?? 0);
 
@@ -141,7 +141,9 @@ export class ContactsService implements OnDestroy {
       console.error('[ContactsService] getContactById:', error.message);
       return null;
     }
-    return data ? mapContactRow(data) : null;
+    if (!data) return null;
+    const [row] = await this._hydrateAssignedToNames([data]);
+    return mapContactRow(row);
   }
 
   async searchContacts(query: string, limit = 10): Promise<Contact[]> {
@@ -161,7 +163,8 @@ export class ContactsService implements OnDestroy {
       console.error('[ContactsService] searchContacts:', error.message);
       return [];
     }
-    return (data ?? []).map(mapContactRow);
+    const rows = await this._hydrateAssignedToNames(data ?? []);
+    return rows.map(mapContactRow);
   }
 
   // ══════════════════════════════════════════════════════════════════════════════
@@ -204,7 +207,8 @@ export class ContactsService implements OnDestroy {
         return null;
       }
 
-      const contact = mapContactRow(data);
+      const [row] = await this._hydrateAssignedToNames([data]);
+      const contact = mapContactRow(row);
       this._contacts.update(list => [contact, ...list]);
       this._total.update(n => n + 1);
       this.notify.success(`Contact "${contact.fullName}" created.`);
@@ -251,7 +255,8 @@ export class ContactsService implements OnDestroy {
         return null;
       }
 
-      const updated = mapContactRow(data);
+      const [row] = await this._hydrateAssignedToNames([data]);
+      const updated = mapContactRow(row);
       this._contacts.update(list =>
         list.map(c => c.id === id ? updated : c),
       );
@@ -497,5 +502,23 @@ export class ContactsService implements OnDestroy {
       this.supabase.client.removeChannel(this._channel);
       this._channel = null;
     }
+  }
+
+  private async _hydrateAssignedToNames(rows: ContactRow[]): Promise<ContactRow[]> {
+    if (rows.length === 0) return rows;
+
+    const ids = [...new Set(rows.map((r) => r.assigned_to).filter(Boolean))] as string[];
+    if (ids.length === 0) return rows;
+
+    const { data } = await this.supabase.client
+      .from('profiles')
+      .select('id, full_name')
+      .in('id', ids);
+
+    const nameMap = new Map((data ?? []).map((p: any) => [p.id, p.full_name ?? null]));
+    return rows.map((row) => ({
+      ...row,
+      profiles: { full_name: nameMap.get(row.assigned_to ?? '') ?? '' },
+    }));
   }
 }

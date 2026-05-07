@@ -65,15 +65,13 @@ interface TaskRow {
   updated_at:   string;
   contacts?:    { first_name: string; last_name: string } | null;
   deals?:       { title: string } | null;
-  profiles?:    { full_name: string } | null;
 }
 
 const TASK_SELECT = `
   id, tenant_id, type, title, description, contact_id, deal_id,
   assigned_to, created_by, due_date, completed_at, created_at, updated_at,
   contacts ( first_name, last_name ),
-  deals ( title ),
-  profiles!activities_assigned_to_fkey ( full_name )
+  deals ( title )
 `.trim();
 
 function mapTaskRow(r: TaskRow): Task {
@@ -96,7 +94,7 @@ function mapTaskRow(r: TaskRow): Task {
     dealId:         r.deal_id,
     dealTitle:      r.deals?.title ?? null,
     assignedTo:     r.assigned_to,
-    assignedToName: r.profiles?.full_name ?? null,
+    assignedToName: null,
     createdBy:      r.created_by,
     dueDate:        r.due_date,
     completedAt:    r.completed_at,

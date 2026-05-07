@@ -19,7 +19,7 @@ export interface KPIData {
 }
 
 export interface DealsByStage {
-  stage:      string;
+  stage:      string; // canonical stage key: new, qualified, ...
   count:      number;
   value:      number;
   color:      string;
@@ -126,7 +126,7 @@ export class DashboardService {
     // Get stages with their colors
     const { data: stages } = await this.supabase.client
       .from('deal_stages')
-      .select('name, color, order_position')
+      .select('name, color, order_position, tenant_id')
       .or(`tenant_id.eq.${tenantId},tenant_id.is.null`)
       .order('order_position');
 
@@ -154,16 +154,30 @@ export class DashboardService {
       });
     }
 
-    return (stages as { name: string; color: string }[]).map(s => {
-      const key = s.name.toLowerCase().replace(/\s+/g, '_');
+    const byKey = new Map<string, { name: string; color: string; tenant_id?: string | null; order_position: number }>();
+    for (const s of stages as { name: string; color: string; tenant_id?: string | null; order_position: number }[]) {
+      const key = this._normalizeStageName(s.name);
+      const existing = byKey.get(key);
+      if (!existing) {
+        byKey.set(key, s);
+        continue;
+      }
+      const currentIsTenant = Boolean(s.tenant_id);
+      const existingIsTenant = Boolean(existing.tenant_id);
+      if (currentIsTenant && !existingIsTenant) {
+        byKey.set(key, s);
+      }
+    }
+
+    return Array.from(byKey.entries()).map(([key, s]) => {
       const stats = stageMap.get(key) ?? stageMap.get(s.name) ?? { count: 0, value: 0 };
       return {
-        stage: s.name,
+        stage: key,
         count: stats.count,
         value: stats.value,
         color: s.color,
       };
-    }).filter(s => s.count > 0 || s.stage !== 'Closed Lost');
+    }).filter(s => s.count > 0 || s.stage !== 'closed_lost');
   }
 
   // ── Revenue by month ──────────────────────────────────────────────────────────
@@ -201,8 +215,7 @@ export class DashboardService {
     const { data, error } = await this.supabase.client
       .from('activities')
       .select(`
-        id, type, title, description, created_at,
-        profiles!activities_created_by_fkey ( full_name, avatar_url ),
+        id, type, title, description, created_at, created_by,
         contacts ( first_name, last_name )
       `)
       .eq('tenant_id', tenantId)
@@ -211,18 +224,31 @@ export class DashboardService {
 
     if (error || !data) return [];
 
-    return (data as any[]).map(a => ({
-      id:          a.id,
-      type:        a.type,
-      title:       a.title,
-      description: a.description,
-      userName:    a.profiles?.full_name ?? 'Unknown',
-      userAvatar:  a.profiles?.avatar_url ?? null,
-      contactName: a.contacts
-        ? `${a.contacts.first_name} ${a.contacts.last_name}`.trim()
-        : null,
-      createdAt:   a.created_at,
-    }));
+    const creatorIds = [...new Set((data as any[]).map((a) => a.created_by).filter(Boolean))];
+    let creators = new Map<string, { full_name: string | null; avatar_url: string | null }>();
+    if (creatorIds.length > 0) {
+      const { data: profiles } = await this.supabase.client
+        .from('profiles')
+        .select('id, full_name, avatar_url')
+        .in('id', creatorIds);
+      creators = new Map((profiles ?? []).map((p: any) => [p.id, p]));
+    }
+
+    return (data as any[]).map(a => {
+      const creator = creators.get(a.created_by);
+      return {
+        id:          a.id,
+        type:        a.type,
+        title:       a.title,
+        description: a.description,
+        userName:    creator?.full_name ?? 'Unknown',
+        userAvatar:  creator?.avatar_url ?? null,
+        contactName: a.contacts
+          ? `${a.contacts.first_name} ${a.contacts.last_name}`.trim()
+          : null,
+        createdAt:   a.created_at,
+      };
+    });
   }
 
   // ── My tasks ──────────────────────────────────────────────────────────────────
@@ -355,5 +381,27 @@ export class DashboardService {
       conversionRate: 0, conversionChange: 0,
       currency: 'USD',
     };
+  }
+
+  private _normalizeStageName(name: string): string {
+    const normalized = name.toLowerCase().trim().replace(/[\s-]+/g, '_');
+    const map: Record<string, string> = {
+      new: 'new',
+      nuevo: 'new',
+      qualified: 'qualified',
+      calificado: 'qualified',
+      proposal: 'proposal',
+      propuesta: 'proposal',
+      negotiation: 'negotiation',
+      negociacion: 'negotiation',
+      'negociación': 'negotiation',
+      closed_won: 'closed_won',
+      ganado: 'closed_won',
+      cerrada_ganada: 'closed_won',
+      closed_lost: 'closed_lost',
+      perdido: 'closed_lost',
+      cerrada_perdida: 'closed_lost',
+    };
+    return map[normalized] ?? normalized;
   }
 }

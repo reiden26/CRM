@@ -141,11 +141,13 @@
       "EMAIL":       "Email",
       "PHONE":       "Phone",
       "COMPANY":     "Company",
+      "SEARCH_COMPANIES": "Search companies…",
       "POSITION":    "Job title",
       "SOURCE":      "Source",
       "STATUS":      "Status",
       "ASSIGNED_TO": "Assigned to",
       "NOTES":       "Notes",
+      "NOTES_PLACEHOLDER": "Add notes…",
       "SAVE":        "Save changes",
       "CREATE":      "Create contact",
       "CANCEL":      "Cancel",
@@ -167,6 +169,7 @@
       "ALL_STATUSES":  "All statuses",
       "ANYONE":        "Anyone",
       "ALL_COMPANIES": "All companies",
+      "SEARCH_PLACEHOLDER": "Name, email…",
       "CREATED_FROM":  "Created from",
       "CREATED_TO":    "Created to",
       "CLEAR":         "Clear filters"
@@ -184,9 +187,19 @@
     "KANBAN":     "Kanban view",
     "LIST":       "List view",
     "MOVED_TO":   "Moved to \"{{stage}}\"",
+    "ADD_TO_STAGE":"Add deal to {{stage}}",
+    "DROP_HERE": "Drop deals here",
     "UNDO":       "Undo",
     "MARK_LOST":  "Mark as lost",
     "LOST_CONFIRM":"Mark this deal as lost?",
+    "STAGES": {
+      "NEW": "New",
+      "QUALIFIED": "Qualified",
+      "PROPOSAL": "Proposal",
+      "NEGOTIATION": "Negotiation",
+      "CLOSED_WON": "Closed Won",
+      "CLOSED_LOST": "Closed Lost"
+    },
     "COLUMNS": {
       "DEAL":      "Deal",
       "COMPANY":   "Company",
@@ -198,15 +211,21 @@
     },
     "FORM": {
       "TITLE":       "Deal title",
+      "TITLE_PLACEHOLDER": "e.g. Enterprise License Q3",
       "CONTACT":     "Contact",
+      "SEARCH_CONTACTS": "Search contacts…",
       "COMPANY":     "Company",
       "STAGE":       "Stage",
       "VALUE":       "Value",
       "CURRENCY":    "Currency",
       "PROBABILITY": "Probability",
+      "LOW":         "Low",
+      "HIGH":        "High",
       "CLOSE_DATE":  "Expected close date",
       "ASSIGNED_TO": "Assigned to",
       "DESCRIPTION": "Description",
+      "DESCRIPTION_PLACEHOLDER": "Notes about this deal…",
+      "EDIT_TITLE":  "Edit deal",
       "SAVE":        "Save changes",
       "CREATE":      "Create deal",
       "CANCEL":      "Cancel"
@@ -245,6 +264,31 @@
       "SUCCESS": "Success",
       "WARNING": "Warning",
       "ALERTS":  "Alerts"
+    },
+    "PAGE": {
+      "UNREAD_COUNT": "{{count}} unread",
+      "FILTERS_ARIA": "Notification filters",
+      "BULK_ARIA": "Bulk actions",
+      "SELECTED_COUNT": "{{count}} selected",
+      "MARK_AS_READ": "Mark as read",
+      "CLEAR_SELECTION": "Clear selection",
+      "NO_NOTIFICATIONS": "No notifications",
+      "NO_UNREAD": "You have no unread notifications.",
+      "NO_FILTERED": "No {{type}} notifications found.",
+      "ALL_CAUGHT_UP": "You're all caught up! No notifications yet."
+    },
+    "EVENTS": {
+      "DEAL_ASSIGNED_TITLE": "New deal assigned to you",
+      "DEAL_ASSIGNED_BODY": "Deal \"{{dealTitle}}\" has been assigned to you.",
+      "DEAL_WON_TITLE": "🎉 Deal won!",
+      "DEAL_WON_BODY": "Congratulations! \"{{dealTitle}}\" has been marked as won.",
+      "TASK_ASSIGNED_TITLE": "New task assigned to you",
+      "TASK_ASSIGNED_BODY": "Task \"{{taskTitle}}\" has been assigned to you.",
+      "TASK_DUE_SOON_TITLE": "Task due in {{hoursLeft}}h",
+      "TASK_DUE_SOON_BODY": "\"{{taskTitle}}\" is due soon. Don't forget to complete it.",
+      "CONTACT_ASSIGNED_TITLE": "Contact assigned to you",
+      "CONTACT_ASSIGNED_BODY": "{{contactName}} has been assigned to you.",
+      "MENTION_TITLE": "{{authorName}} mentioned you"
     }
   },
   "SETTINGS": {
@@ -258,6 +302,21 @@
       "EMAIL_LOGS": "Email Logs",
       "NOTIF_PREFS":"Notifications",
       "AUDIT":      "Audit Log"
+    },
+    "EMAIL_LOGS": {
+      "SUBTITLE": "All emails sent from your workspace.",
+      "STATUS": "Status",
+      "ALL_STATUSES": "All statuses",
+      "RECIPIENT_EMAIL": "Recipient email",
+      "SEARCH_PLACEHOLDER": "Search by email…",
+      "TABLE_ARIA": "Email logs",
+      "RECIPIENT": "Recipient",
+      "SUBJECT": "Subject",
+      "TEMPLATE": "Template",
+      "SENT": "Sent",
+      "RETRY": "Retry",
+      "EMPTY": "No email logs found",
+      "PAGINATION_ARIA": "Email logs pagination"
     },
     "LANGUAGE": {
       "TITLE":    "Language",
@@ -282,6 +341,7 @@
     "CONFIRM":     "Confirm",
     "BACK":        "Back",
     "CLOSE":       "Close",
+    "CLEAR":       "Clear",
     "YES":         "Yes",
     "NO":          "No",
     "NONE":        "None",
@@ -331,6 +391,12 @@
   "NOT_FOUND_PAGE": {
     "TITLE":    "Page not found",
     "SUBTITLE": "The page you're looking for doesn't exist or was moved."
+  },
+  "COMING_SOON": {
+    "TITLE": "Coming soon",
+    "SUBTITLE": "{{feature}} will be available very soon.",
+    "HINT": "We're working to ship it as soon as possible.",
+    "BACK": "Back to Dashboard"
   },
   "CONFIRM_DIALOG": {
     "CONFIRM": "Confirm",

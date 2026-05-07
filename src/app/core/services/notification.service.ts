@@ -178,9 +178,7 @@ export class NotificationService implements OnDestroy {
         },
       )
       .subscribe((status) => {
-        if (status === 'SUBSCRIBED') {
-          console.log('[NotificationService] Realtime subscribed for user:', userId);
-        }
+        if (status === 'SUBSCRIBED') return;
       });
   }
 
@@ -299,7 +297,7 @@ export class NotificationService implements OnDestroy {
     type: ToastType,
     duration: number,
   ): MatSnackBarRef<TextOnlySnackBar> {
-    return this.snackBar.open(message, 'Dismiss', {
+    return this.snackBar.open(message, 'Cerrar', {
       duration,
       panelClass: [`snack-${type}`],
       horizontalPosition: 'right',
@@ -312,12 +310,16 @@ export class NotificationService implements OnDestroy {
    * that navigates to the related resource.
    */
   private _showRealtimeToast(notification: InAppNotification): void {
-    const ref = this.snackBar.open(notification.title, 'View', {
-      duration:           6000,
-      panelClass:         [`snack-${notification.type}`, 'snack-realtime'],
-      horizontalPosition: 'right',
-      verticalPosition:   'bottom',
-    });
+    const ref = this.snackBar.open(
+      notification.title,
+      'Ver',
+      {
+        duration:           6000,
+        panelClass:         [`snack-${notification.type}`, 'snack-realtime'],
+        horizontalPosition: 'right',
+        verticalPosition:   'bottom',
+      },
+    );
 
     ref.onAction().subscribe(() => {
       const url = this._buildResourceUrl(notification);

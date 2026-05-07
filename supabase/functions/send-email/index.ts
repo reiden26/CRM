@@ -11,8 +11,9 @@
  *   RESEND_FROM_EMAIL   (e.g. "CRM <noreply@yourdomain.com>")
  */
 
-import { handleCors, corsHeaders } from '../_shared/cors.ts';
+import { handleCors, resolveCorsHeaders } from '../_shared/cors.ts';
 import { createServiceClient } from '../_shared/supabase-client.ts';
+import { getAuthContext, isServiceToken } from '../_shared/auth.ts';
 import type { SendEmailPayload, EmailTemplate, EmailLog } from '../_shared/types.ts';
 
 // ── Template variable interpolation ─────────────────────────────────────────
@@ -57,6 +58,7 @@ Deno.serve(async (req: Request) => {
   // CORS preflight
   const corsResponse = handleCors(req);
   if (corsResponse) return corsResponse;
+  const corsHeaders = resolveCorsHeaders(req);
 
   const supabase = createServiceClient();
   const fromEmail =
@@ -73,7 +75,18 @@ Deno.serve(async (req: Request) => {
     );
   }
 
-  const { to, templateName, variables, tenantId } = payload;
+  const { to, templateName, variables } = payload;
+  const internalCall = isServiceToken(req);
+  const authContext = internalCall ? null : await getAuthContext(req);
+  if (!internalCall && authContext instanceof Response) {
+    return new Response(
+      JSON.stringify({ error: 'Unauthorized request' }),
+      { status: authContext.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+    );
+  }
+  const tenantId = internalCall
+    ? payload.tenantId
+    : (authContext as { tenantId: string }).tenantId;
 
   if (!to || !templateName || !tenantId) {
     return new Response(

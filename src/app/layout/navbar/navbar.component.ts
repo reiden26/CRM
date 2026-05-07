@@ -26,7 +26,7 @@ import { PushNotificationService } from '../../core/services/push-notification.s
 import { ThemeService } from '../../core/services/theme.service';
 import { LanguageService } from '../../core/services/language.service';
 import { NotificationBellComponent } from '../../shared/components/notification-bell/notification-bell.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Breadcrumb item
@@ -35,23 +35,34 @@ import { TranslateModule } from '@ngx-translate/core';
 export interface BreadcrumbItem {
   label: string;
   url:   string | null; // null = current page (not a link)
+  isKey?: boolean;
 }
 
 // Route segment → human-readable label map
 const ROUTE_LABELS: Record<string, string> = {
-  dashboard:     'Dashboard',
-  contacts:      'Contacts',
-  companies:     'Companies',
-  pipeline:      'Pipeline',
-  tasks:         'Tasks',
-  reports:       'Reports',
-  settings:      'Settings',
-  notifications: 'Notifications',
-  new:           'New',
-  edit:          'Edit',
-  profile:       'My Profile',
-  billing:       'Billing',
-  users:         'Users',
+  dashboard:     'NAV.DASHBOARD',
+  contacts:      'NAV.CONTACTS',
+  companies:     'NAV.COMPANIES',
+  pipeline:      'NAV.PIPELINE',
+  tasks:         'NAV.TASKS',
+  reports:       'NAV.REPORTS',
+  settings:      'NAV.SETTINGS',
+  notifications: 'NAV.NOTIFICATIONS',
+
+  // Settings sub-nav
+  company:                  'SETTINGS.NAV.COMPANY',
+  users:                    'SETTINGS.NAV.USERS',
+  pipeline_config:          'SETTINGS.NAV.PIPELINE',
+  roles:                    'SETTINGS.NAV.ROLES',
+  email_templates:          'SETTINGS.NAV.EMAIL_TPL',
+  email_logs:               'SETTINGS.NAV.EMAIL_LOGS',
+  notification_preferences: 'SETTINGS.NAV.NOTIF_PREFS',
+  audit_log:                'SETTINGS.NAV.AUDIT',
+
+  // Generic segments
+  new:           'COMMON.CREATE',
+  edit:          'COMMON.EDIT',
+  profile:       'COMMON.MY_PROFILE',
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -87,6 +98,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   // ── Dependencies ────────────────────────────────────────────────────────────
   private readonly router         = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly translate      = inject(TranslateService);
   readonly auth                   = inject(AuthService);
   readonly tenantService          = inject(TenantService);
   readonly pushService            = inject(PushNotificationService);
@@ -100,10 +112,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   readonly pushMenuLabel = computed(() => {
     if (this.pushPermission() === 'unsupported') return null;
-    if (this.pushPermission() === 'denied')      return 'Push blocked in browser';
+    if (this.pushPermission() === 'denied')      return this.translate.instant('COMMON.PUSH_BLOCKED');
     return this.isPushSubscribed()
-      ? 'Disable push notifications'
-      : 'Enable push notifications';
+      ? this.translate.instant('COMMON.PUSH_DISABLE')
+      : this.translate.instant('COMMON.PUSH_ENABLE');
   });
 
   readonly pushMenuIcon = computed(() =>
@@ -135,6 +147,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   // ── Subscriptions ────────────────────────────────────────────────────────────
   private _routerSub: Subscription | null = null;
+  private _langSub: Subscription | null = null;
 
   // ── Lifecycle ────────────────────────────────────────────────────────────────
 
@@ -146,10 +159,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this._routerSub = this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe(() => this._buildBreadcrumbs());
+
+    // Rebuild when language changes (so labels update)
+    this._langSub = this.translate.onLangChange.subscribe(() => this._buildBreadcrumbs());
   }
 
   ngOnDestroy(): void {
     this._routerSub?.unsubscribe();
+    this._langSub?.unsubscribe();
   }
 
   // ── Actions ───────────────────────────────────────────────────────────────────
@@ -204,11 +221,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
         continue;
       }
 
-      const label = ROUTE_LABELS[segment] ?? this._capitalize(segment);
+      const normalized = segment.replace(/-/g, '_');
+      const labelKey = ROUTE_LABELS[normalized] ?? ROUTE_LABELS[segment];
+      const isKey = !!labelKey && labelKey.includes('.');
+      const label = labelKey ?? this._capitalize(segment);
       const isLast = i === segments.length - 1;
 
       crumbs.push({
         label,
+        isKey,
         url: isLast ? null : cumulativePath,
       });
     }

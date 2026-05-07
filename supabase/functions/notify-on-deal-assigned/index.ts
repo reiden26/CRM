@@ -14,8 +14,9 @@
  *   3. If email_on_deal_assigned = true → enqueues in email_queue
  */
 
-import { handleCors, corsHeaders } from '../_shared/cors.ts';
+import { handleCors, resolveCorsHeaders } from '../_shared/cors.ts';
 import { createServiceClient } from '../_shared/supabase-client.ts';
+import { isServiceToken } from '../_shared/auth.ts';
 import type {
   DealAssignedPayload,
   NotificationPreferences,
@@ -50,6 +51,14 @@ async function invokeFunction(
 Deno.serve(async (req: Request) => {
   const corsResponse = handleCors(req);
   if (corsResponse) return corsResponse;
+  const corsHeaders = resolveCorsHeaders(req);
+
+  if (!isServiceToken(req)) {
+    return new Response(
+      JSON.stringify({ error: 'Unauthorized request' }),
+      { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+    );
+  }
 
   let webhookPayload: DealAssignedPayload;
   try {

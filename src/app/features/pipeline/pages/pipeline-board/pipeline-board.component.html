@@ -94,7 +94,7 @@
           <!-- Column header -->
           <div class="column-header" [style.border-top-color]="stage.color">
             <div class="column-header-left">
-              <span class="column-name">{{ stage.name }}</span>
+              <span class="column-name">{{ getStageLabel(stage.name) }}</span>
               <span class="column-count">{{ getDealsForStage(stage.id).length }}</span>
             </div>
             <div class="column-header-right">
@@ -109,7 +109,7 @@
                 <button
                   mat-icon-button
                   class="add-deal-btn"
-                  [matTooltip]="'Add deal to ' + stage.name"
+                  [matTooltip]="'PIPELINE.ADD_TO_STAGE' | translate:{ stage: getStageLabel(stage.name) }"
                   (click)="openCreateDialog(stage)"
                 >
                   <mat-icon>add</mat-icon>
@@ -142,7 +142,7 @@
             @if (getDealsForStage(stage.id).length === 0) {
               <div class="column-empty">
                 <mat-icon>inbox</mat-icon>
-                <span>Drop deals here</span>
+                <span>{{ 'PIPELINE.DROP_HERE' | translate }}</span>
               </div>
             }
           </div>
@@ -187,7 +187,7 @@
               <span class="stage-chip"
                 [style.background]="(stages$() | stageColor:row.stage) + '22'"
                 [style.color]="stages$() | stageColor:row.stage">
-                {{ row.stage | titlecase }}
+                {{ getStageLabel(row.stage) }}
               </span>
             }
           </td>

@@ -3,7 +3,7 @@
   <!-- Draft saved indicator -->
   @if (draftSaved()) {
     <div class="draft-badge">
-      <mat-icon>save</mat-icon> Draft saved
+      <mat-icon>save</mat-icon> {{ 'CONTACTS.FORM.DRAFT_SAVED' | translate }}
     </div>
   }
 
@@ -11,21 +11,21 @@
 
     <!-- First name -->
     <mat-form-field appearance="outline">
-      <mat-label>First name *</mat-label>
+      <mat-label>{{ 'CONTACTS.FORM.FIRST_NAME' | translate }} *</mat-label>
       <input matInput formControlName="firstName" autocomplete="given-name" />
       @if (getError('firstName'); as err) { <mat-error>{{ err }}</mat-error> }
     </mat-form-field>
 
     <!-- Last name -->
     <mat-form-field appearance="outline">
-      <mat-label>Last name *</mat-label>
+      <mat-label>{{ 'CONTACTS.FORM.LAST_NAME' | translate }} *</mat-label>
       <input matInput formControlName="lastName" autocomplete="family-name" />
       @if (getError('lastName'); as err) { <mat-error>{{ err }}</mat-error> }
     </mat-form-field>
 
     <!-- Email -->
     <mat-form-field appearance="outline">
-      <mat-label>Email</mat-label>
+      <mat-label>{{ 'CONTACTS.FORM.EMAIL' | translate }}</mat-label>
       <input matInput formControlName="email" type="email" autocomplete="email" />
       <mat-icon matPrefix>email</mat-icon>
       @if (getError('email'); as err) { <mat-error>{{ err }}</mat-error> }
@@ -33,23 +33,23 @@
 
     <!-- Phone -->
     <mat-form-field appearance="outline">
-      <mat-label>Phone</mat-label>
+      <mat-label>{{ 'CONTACTS.FORM.PHONE' | translate }}</mat-label>
       <input matInput formControlName="phone" type="tel" autocomplete="tel" />
       <mat-icon matPrefix>phone</mat-icon>
     </mat-form-field>
 
     <!-- Company autocomplete -->
     <mat-form-field appearance="outline" class="span-2">
-      <mat-label>Company</mat-label>
+      <mat-label>{{ 'CONTACTS.FORM.COMPANY' | translate }}</mat-label>
       <input
         matInput
         formControlName="companySearch"
         [matAutocomplete]="companyAuto"
-        placeholder="Search companies…"
+        [placeholder]="'CONTACTS.FORM.SEARCH_COMPANIES' | translate"
       />
       <mat-icon matPrefix>business</mat-icon>
       @if (form.get('companyId')?.value) {
-        <button matSuffix mat-icon-button (click)="clearCompany()" type="button" aria-label="Clear company">
+        <button matSuffix mat-icon-button (click)="clearCompany()" type="button" [attr.aria-label]="'COMMON.CLEAR' | translate">
           <mat-icon>close</mat-icon>
         </button>
       }
@@ -64,16 +64,16 @@
 
     <!-- Position -->
     <mat-form-field appearance="outline">
-      <mat-label>Job title</mat-label>
+      <mat-label>{{ 'CONTACTS.FORM.POSITION' | translate }}</mat-label>
       <input matInput formControlName="position" />
       <mat-icon matPrefix>work</mat-icon>
     </mat-form-field>
 
     <!-- Source -->
     <mat-form-field appearance="outline">
-      <mat-label>Source</mat-label>
+      <mat-label>{{ 'CONTACTS.FORM.SOURCE' | translate }}</mat-label>
       <mat-select formControlName="source">
-        <mat-option [value]="null">Unknown</mat-option>
+        <mat-option [value]="null">{{ 'COMMON.UNKNOWN' | translate }}</mat-option>
         @for (opt of sourceOptions; track opt.value) {
           <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
         }
@@ -82,7 +82,7 @@
 
     <!-- Status -->
     <mat-form-field appearance="outline">
-      <mat-label>Status *</mat-label>
+      <mat-label>{{ 'CONTACTS.FORM.STATUS' | translate }} *</mat-label>
       <mat-select formControlName="status">
         @for (opt of statusOptions; track opt.value) {
           <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
@@ -93,9 +93,9 @@
 
     <!-- Assigned to -->
     <mat-form-field appearance="outline">
-      <mat-label>Assigned to</mat-label>
+      <mat-label>{{ 'CONTACTS.FORM.ASSIGNED_TO' | translate }}</mat-label>
       <mat-select formControlName="assignedTo">
-        <mat-option [value]="null">Unassigned</mat-option>
+        <mat-option [value]="null">{{ 'COMMON.UNASSIGNED' | translate }}</mat-option>
         @for (m of teamMembers(); track m.id) {
           <mat-option [value]="m.id">{{ m.fullName }}</mat-option>
         }
@@ -104,8 +104,8 @@
 
     <!-- Notes -->
     <mat-form-field appearance="outline" class="span-2">
-      <mat-label>Notes</mat-label>
-      <textarea matInput formControlName="notes" rows="3" placeholder="Add notes…"></textarea>
+      <mat-label>{{ 'CONTACTS.FORM.NOTES' | translate }}</mat-label>
+      <textarea matInput formControlName="notes" rows="3" [placeholder]="'CONTACTS.FORM.NOTES_PLACEHOLDER' | translate"></textarea>
     </mat-form-field>
 
   </div>

@@ -264,7 +264,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     const config: ChartConfiguration<'bar'> = {
       type: 'bar',
       data: {
-        labels:   data.map(d => d.stage),
+        labels:   data.map(d => this._translateStage(d.stage)),
         datasets: [{
           label:           'Deals',
           data:            data.map(d => d.count),
@@ -447,5 +447,11 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
     if (value >= 1_000)     return `$${(value / 1_000).toFixed(0)}K`;
     return `$${value}`;
+  }
+
+  private _translateStage(stage: string): string {
+    const key = `PIPELINE.STAGES.${stage.toUpperCase()}`;
+    const translated = this.translate.instant(key);
+    return translated === key ? stage : translated;
   }
 }

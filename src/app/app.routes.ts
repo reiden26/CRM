@@ -111,8 +111,11 @@ export const routes: Routes = [
       },
       {
         path: 'tasks',
-        loadChildren: () =>
-          import('./features/tasks/tasks.routes').then((m) => m.TASKS_ROUTES),
+        loadComponent: () =>
+          import('./shared/pages/coming-soon/coming-soon.component').then(
+            (m) => m.ComingSoonComponent,
+          ),
+        data: { featureLabelKey: 'NAV.TASKS', icon: 'task_alt' },
       },
       {
         path: 'notifications',
@@ -123,10 +126,19 @@ export const routes: Routes = [
       },
       {
         path: 'reports',
-        loadChildren: () =>
-          import('./features/reports/reports.routes').then(
-            (m) => m.REPORTS_ROUTES,
+        loadComponent: () =>
+          import('./shared/pages/coming-soon/coming-soon.component').then(
+            (m) => m.ComingSoonComponent,
           ),
+        data: { featureLabelKey: 'NAV.REPORTS', icon: 'bar_chart' },
+      },
+      {
+        path: 'companies',
+        loadComponent: () =>
+          import('./shared/pages/coming-soon/coming-soon.component').then(
+            (m) => m.ComingSoonComponent,
+          ),
+        data: { featureLabelKey: 'NAV.COMPANIES', icon: 'business' },
       },
       {
         path: 'settings',

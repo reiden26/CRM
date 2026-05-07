@@ -13,8 +13,9 @@
  *   VAPID_SUBJECT   (e.g. "mailto:admin@yourdomain.com")
  */
 
-import { handleCors, corsHeaders } from '../_shared/cors.ts';
+import { handleCors, resolveCorsHeaders } from '../_shared/cors.ts';
 import { createServiceClient } from '../_shared/supabase-client.ts';
+import { getAuthContext, isServiceToken } from '../_shared/auth.ts';
 import type { SendPushPayload, PushSubscription } from '../_shared/types.ts';
 
 // ── VAPID / Web Push implementation ─────────────────────────────────────────
@@ -126,8 +127,17 @@ async function sendWebPush(
 Deno.serve(async (req: Request) => {
   const corsResponse = handleCors(req);
   if (corsResponse) return corsResponse;
+  const corsHeaders = resolveCorsHeaders(req);
 
   const supabase = createServiceClient();
+  const internalCall = isServiceToken(req);
+  const authContext = internalCall ? null : await getAuthContext(req);
+  if (!internalCall && authContext instanceof Response) {
+    return new Response(
+      JSON.stringify({ error: 'Unauthorized request' }),
+      { status: authContext.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+    );
+  }
 
   let payload: SendPushPayload;
   try {
@@ -140,6 +150,12 @@ Deno.serve(async (req: Request) => {
   }
 
   const { userId, title, body, data } = payload;
+  if (!internalCall && userId !== (authContext as { userId: string }).userId) {
+    return new Response(
+      JSON.stringify({ error: 'You can only send push notifications to your own user' }),
+      { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+    );
+  }
 
   if (!userId || !title || !body) {
     return new Response(

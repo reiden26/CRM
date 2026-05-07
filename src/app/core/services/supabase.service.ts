@@ -17,9 +17,10 @@ import { environment } from '../../../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class SupabaseService implements OnDestroy {
 
+  private readonly _config = this._getValidatedConfig();
   private readonly _client: SupabaseClient = createClient(
-    environment.supabase.url,
-    environment.supabase.anonKey,
+    this._config.url,
+    this._config.anonKey,
     {
       auth: {
         persistSession:     true,
@@ -44,6 +45,7 @@ export class SupabaseService implements OnDestroy {
 
   constructor() {
     this._initAuthListener();
+    void this._recoverFromInvalidRefreshToken();
   }
 
   get client(): SupabaseClient { return this._client; }
@@ -92,5 +94,38 @@ export class SupabaseService implements OnDestroy {
   private _updateSession(session: Session | null): void {
     this._session$.next(session);
     this._sessionSignal.set(session);
+  }
+
+  private async _recoverFromInvalidRefreshToken(): Promise<void> {
+    const { error } = await this._client.auth.getSession();
+    if (!error) return;
+
+    const msg = error.message.toLowerCase();
+    if (msg.includes('invalid refresh token') || msg.includes('refresh token not found')) {
+      await this._client.auth.signOut();
+      this._updateSession(null);
+    }
+  }
+
+  private _getValidatedConfig(): { url: string; anonKey: string } {
+    const url = environment.supabase.url?.trim() ?? '';
+    const anonKey = environment.supabase.anonKey?.trim() ?? '';
+
+    if (!url || !anonKey) {
+      throw new Error(
+        'Supabase no configurado. Define SUPABASE_URL y SUPABASE_ANON_KEY en src/assets/env-config.js o src/environments/environment.ts',
+      );
+    }
+
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+        throw new Error('invalid protocol');
+      }
+    } catch {
+      throw new Error(`SUPABASE_URL invalida: "${url}"`);
+    }
+
+    return { url, anonKey };
   }
 }

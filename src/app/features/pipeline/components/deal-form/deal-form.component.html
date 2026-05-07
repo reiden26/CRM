@@ -1,23 +1,23 @@
-<h2 mat-dialog-title>{{ isEditMode ? ('COMMON.EDIT' | translate) + ' Deal' : ('PIPELINE.NEW_DEAL' | translate) }}</h2>
+<h2 mat-dialog-title>{{ isEditMode ? ('PIPELINE.FORM.EDIT_TITLE' | translate) : ('PIPELINE.NEW_DEAL' | translate) }}</h2>
 
 <mat-dialog-content class="deal-form-content">
   <form [formGroup]="form" novalidate class="deal-form-grid">
 
     <!-- Title -->
     <mat-form-field appearance="outline" class="span-2">
-      <mat-label>Deal title *</mat-label>
-      <input matInput formControlName="title" placeholder="e.g. Enterprise License Q3" />
+      <mat-label>{{ 'PIPELINE.FORM.TITLE' | translate }} *</mat-label>
+      <input matInput formControlName="title" [placeholder]="'PIPELINE.FORM.TITLE_PLACEHOLDER' | translate" />
       @if (getError('title'); as err) { <mat-error>{{ err }}</mat-error> }
     </mat-form-field>
 
     <!-- Contact autocomplete -->
     <mat-form-field appearance="outline">
-      <mat-label>Contact</mat-label>
+      <mat-label>{{ 'PIPELINE.FORM.CONTACT' | translate }}</mat-label>
       <input
         matInput
         formControlName="contactSearch"
         [matAutocomplete]="contactAuto"
-        placeholder="Search contacts…"
+        [placeholder]="'PIPELINE.FORM.SEARCH_CONTACTS' | translate"
       />
       <mat-icon matPrefix>person</mat-icon>
       @if (form.get('contactId')?.value) {
@@ -36,9 +36,9 @@
 
     <!-- Company -->
     <mat-form-field appearance="outline">
-      <mat-label>Company</mat-label>
+      <mat-label>{{ 'PIPELINE.FORM.COMPANY' | translate }}</mat-label>
       <mat-select formControlName="companyId">
-        <mat-option [value]="null">None</mat-option>
+        <mat-option [value]="null">{{ 'COMMON.NONE' | translate }}</mat-option>
         @for (c of companies(); track c.id) {
           <mat-option [value]="c.id">{{ c.name }}</mat-option>
         }
@@ -48,7 +48,7 @@
 
     <!-- Stage -->
     <mat-form-field appearance="outline">
-      <mat-label>Stage *</mat-label>
+      <mat-label>{{ 'PIPELINE.FORM.STAGE' | translate }} *</mat-label>
       <mat-select formControlName="stage">
         @for (s of data.stages; track s.id) {
           <mat-option [value]="s.name.toLowerCase().replace(' ', '_')">
@@ -62,13 +62,13 @@
     <!-- Value + currency -->
     <div class="value-row">
       <mat-form-field appearance="outline" class="value-field">
-        <mat-label>Value *</mat-label>
+        <mat-label>{{ 'PIPELINE.FORM.VALUE' | translate }} *</mat-label>
         <input matInput formControlName="value" type="number" min="0" />
         <mat-icon matPrefix>attach_money</mat-icon>
         @if (getError('value'); as err) { <mat-error>{{ err }}</mat-error> }
       </mat-form-field>
       <mat-form-field appearance="outline" class="currency-field">
-        <mat-label>Currency</mat-label>
+        <mat-label>{{ 'PIPELINE.FORM.CURRENCY' | translate }}</mat-label>
         <mat-select formControlName="currency">
           @for (c of currencies; track c) {
             <mat-option [value]="c">{{ c }}</mat-option>
@@ -80,23 +80,23 @@
     <!-- Probability slider -->
     <div class="probability-section span-2">
       <label class="prob-label">
-        Probability
+        {{ 'PIPELINE.FORM.PROBABILITY' | translate }}
         <span class="prob-value" [style.color]="probabilityColor()">
           {{ form.get('probability')?.value }}%
         </span>
       </label>
       <div class="prob-slider-wrap">
-        <span class="prob-hint low">Low</span>
+        <span class="prob-hint low">{{ 'PIPELINE.FORM.LOW' | translate }}</span>
         <mat-slider min="0" max="100" step="5" class="prob-slider">
           <input matSliderThumb formControlName="probability" />
         </mat-slider>
-        <span class="prob-hint high">High</span>
+        <span class="prob-hint high">{{ 'PIPELINE.FORM.HIGH' | translate }}</span>
       </div>
     </div>
 
     <!-- Expected close date -->
     <mat-form-field appearance="outline">
-      <mat-label>Expected close date</mat-label>
+      <mat-label>{{ 'PIPELINE.FORM.CLOSE_DATE' | translate }}</mat-label>
       <input matInput [matDatepicker]="closePicker" formControlName="expectedCloseDate" />
       <mat-datepicker-toggle matIconSuffix [for]="closePicker" />
       <mat-datepicker #closePicker />
@@ -104,9 +104,9 @@
 
     <!-- Assigned to -->
     <mat-form-field appearance="outline">
-      <mat-label>Assigned to</mat-label>
+      <mat-label>{{ 'PIPELINE.FORM.ASSIGNED_TO' | translate }}</mat-label>
       <mat-select formControlName="assignedTo">
-        <mat-option [value]="null">Unassigned</mat-option>
+        <mat-option [value]="null">{{ 'COMMON.UNASSIGNED' | translate }}</mat-option>
         @for (m of teamMembers(); track m.id) {
           <mat-option [value]="m.id">{{ m.fullName }}</mat-option>
         }
@@ -115,8 +115,8 @@
 
     <!-- Description -->
     <mat-form-field appearance="outline" class="span-2">
-      <mat-label>Description</mat-label>
-      <textarea matInput formControlName="description" rows="3" placeholder="Notes about this deal…"></textarea>
+      <mat-label>{{ 'PIPELINE.FORM.DESCRIPTION' | translate }}</mat-label>
+      <textarea matInput formControlName="description" rows="3" [placeholder]="'PIPELINE.FORM.DESCRIPTION_PLACEHOLDER' | translate"></textarea>
     </mat-form-field>
 
   </form>

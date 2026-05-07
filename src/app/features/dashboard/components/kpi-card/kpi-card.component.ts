@@ -6,13 +6,14 @@ import {
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { TranslateModule } from '@ngx-translate/core';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 
 @Component({
   selector: 'app-kpi-card',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, MatIconModule, MatCardModule, SkeletonComponent],
+  imports: [CommonModule, MatIconModule, MatCardModule, SkeletonComponent, TranslateModule],
   templateUrl: './kpi-card.component.html',
   styleUrl: './kpi-card.component.scss',
 })
@@ -31,6 +32,6 @@ export class KpiCardComponent {
   get changeLabel(): string {
     if (this.change === null) return '';
     const sign = this.change >= 0 ? '+' : '';
-    return `${sign}${this.change}% vs last period`;
+    return `${sign}${this.change}%`;
   }
 }

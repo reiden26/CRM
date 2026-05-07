@@ -33,8 +33,8 @@
                 }
               </div>
             </div>
-            <input class="stage-name-input" [value]="stage.name"
-              (blur)="updateStage(stage, { name: $any($event.target).value })"
+            <input class="stage-name-input" [value]="getStageLabel(stage.name)"
+              (blur)="onStageNameBlur(stage, $any($event.target).value)"
               (keydown.enter)="$any($event.target).blur()" />
             <div class="stage-badges">
               @if (stage.isWon)     { <span class="badge badge-won">{{ 'SETTINGS.PIPELINE.BADGES.WON' | translate }}</span> }
@@ -48,7 +48,7 @@
             <div class="drag-preview" *cdkDragPreview>
               <mat-icon>drag_indicator</mat-icon>
               <div class="color-dot" [style.background]="stage.color"></div>
-              <span>{{ stage.name }}</span>
+              <span>{{ getStageLabel(stage.name) }}</span>
             </div>
           </div>
         }

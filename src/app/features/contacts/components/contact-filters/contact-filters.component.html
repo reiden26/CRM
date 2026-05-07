@@ -3,10 +3,10 @@
   <!-- Search -->
   <mat-form-field appearance="outline" class="filter-search">
     <mat-label>{{ 'CONTACTS.SEARCH' | translate }}</mat-label>
-    <input matInput formControlName="search" placeholder="Name, email…" autocomplete="off" />
+    <input matInput formControlName="search" [placeholder]="'CONTACTS.FILTERS.SEARCH_PLACEHOLDER' | translate" autocomplete="off" />
     <mat-icon matPrefix>search</mat-icon>
     @if (form.get('search')?.value) {
-      <button matSuffix mat-icon-button (click)="form.get('search')?.setValue('')" aria-label="Clear">
+      <button matSuffix mat-icon-button (click)="form.get('search')?.setValue('')" [attr.aria-label]="'COMMON.CLEAR' | translate">
         <mat-icon>close</mat-icon>
       </button>
     }
@@ -14,7 +14,7 @@
 
   <!-- Status -->
   <mat-form-field appearance="outline" class="filter-field">
-    <mat-label>Status</mat-label>
+    <mat-label>{{ 'CONTACTS.COLUMNS.STATUS' | translate }}</mat-label>
     <mat-select formControlName="status">
       <mat-option [value]="null">{{ 'CONTACTS.FILTERS.ALL_STATUSES' | translate }}</mat-option>
       @for (opt of statusOptions; track opt.value) {
@@ -25,7 +25,7 @@
 
   <!-- Assigned to -->
   <mat-form-field appearance="outline" class="filter-field">
-    <mat-label>Assigned to</mat-label>
+    <mat-label>{{ 'CONTACTS.COLUMNS.ASSIGNED' | translate }}</mat-label>
     <mat-select formControlName="assignedTo">
       <mat-option [value]="null">{{ 'CONTACTS.FILTERS.ANYONE' | translate }}</mat-option>
       @for (m of teamMembers(); track m.id) {
@@ -36,7 +36,7 @@
 
   <!-- Company -->
   <mat-form-field appearance="outline" class="filter-field">
-    <mat-label>Company</mat-label>
+    <mat-label>{{ 'CONTACTS.COLUMNS.COMPANY' | translate }}</mat-label>
     <mat-select formControlName="companyId">
       <mat-option [value]="null">{{ 'CONTACTS.FILTERS.ALL_COMPANIES' | translate }}</mat-option>
       @for (c of companies(); track c.id) {
@@ -47,14 +47,14 @@
 
   <!-- Date range -->
   <mat-form-field appearance="outline" class="filter-field">
-    <mat-label>Created from</mat-label>
+    <mat-label>{{ 'CONTACTS.FILTERS.CREATED_FROM' | translate }}</mat-label>
     <input matInput [matDatepicker]="fromPicker" formControlName="dateFrom" />
     <mat-datepicker-toggle matIconSuffix [for]="fromPicker" />
     <mat-datepicker #fromPicker />
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="filter-field">
-    <mat-label>Created to</mat-label>
+    <mat-label>{{ 'CONTACTS.FILTERS.CREATED_TO' | translate }}</mat-label>
     <input matInput [matDatepicker]="toPicker" formControlName="dateTo" />
     <mat-datepicker-toggle matIconSuffix [for]="toPicker" />
     <mat-datepicker #toPicker />

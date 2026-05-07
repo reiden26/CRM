@@ -57,6 +57,11 @@
 .kpi-subtitle {
   font-size: 0.78rem;
   color: var(--crm-text-secondary);
+  min-height: 1.1em;
+}
+
+.subtitle-hidden {
+  visibility: hidden;
 }
 
 .kpi-change {

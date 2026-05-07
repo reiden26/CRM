@@ -33,7 +33,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatChipsModule } from '@angular/material/chips';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PipelineService } from '../../services/pipeline.service';
 import { DealCardComponent } from '../../components/deal-card/deal-card.component';
 import { DealFormComponent, DealFormDialogData } from '../../components/deal-form/deal-form.component';
@@ -96,6 +96,7 @@ export class PipelineBoardComponent implements OnInit, OnDestroy {
   private readonly fb       = inject(FormBuilder);
   private readonly supabase = inject(SupabaseService);
   private readonly auth     = inject(AuthService);
+  private readonly translate = inject(TranslateService);
   private readonly destroy$ = new Subject<void>();
 
   // ── State from service ────────────────────────────────────────────────────────
@@ -242,9 +243,10 @@ export class PipelineBoardComponent implements OnInit, OnDestroy {
     const { previousStage, success } = await this.pipelineService.moveDeal(deal.id, newStageType);
 
     if (success) {
+      const stageLabel = this._translateStage(newStageType);
       const snack = this.snackBar.open(
-        `Moved to "${targetStage.name}"`,
-        'Undo',
+        this.translate.instant('PIPELINE.MOVED_TO', { stage: stageLabel }),
+        this.translate.instant('PIPELINE.UNDO'),
         { duration: 5000, panelClass: ['snack-info'] },
       );
       snack.onAction().subscribe(async () => {
@@ -321,14 +323,34 @@ export class PipelineBoardComponent implements OnInit, OnDestroy {
   trackByDealId(_: number, d: Deal): string { return d.id; }
 
   private _stageNameToType(name: string): DealStageType {
+    const normalized = name.toLowerCase().trim().replace(/[\s-]+/g, '_');
     const map: Record<string, DealStageType> = {
-      'New':         'new',
-      'Qualified':   'qualified',
-      'Proposal':    'proposal',
-      'Negotiation': 'negotiation',
-      'Closed Won':  'closed_won',
-      'Closed Lost': 'closed_lost',
+      new: 'new',
+      nuevo: 'new',
+      qualified: 'qualified',
+      calificado: 'qualified',
+      proposal: 'proposal',
+      propuesta: 'proposal',
+      negotiation: 'negotiation',
+      negociacion: 'negotiation',
+      'negociación': 'negotiation',
+      closed_won: 'closed_won',
+      ganado: 'closed_won',
+      cerrada_ganada: 'closed_won',
+      closed_lost: 'closed_lost',
+      perdido: 'closed_lost',
+      cerrada_perdida: 'closed_lost',
     };
-    return map[name] ?? (name.toLowerCase().replace(/\s+/g, '_') as DealStageType);
+    return map[normalized] ?? 'new';
+  }
+
+  private _translateStage(stage: DealStageType): string {
+    const key = `PIPELINE.STAGES.${stage.toUpperCase()}`;
+    const translated = this.translate.instant(key);
+    return translated === key ? stage : translated;
+  }
+
+  getStageLabel(rawStage: string): string {
+    return this._translateStage(this._stageNameToType(rawStage));
   }
 }

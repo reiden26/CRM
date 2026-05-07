@@ -2,23 +2,23 @@
   <div class="settings-page-header">
     <div>
       <h2 class="settings-page-title">{{ 'SETTINGS.NAV.EMAIL_LOGS' | translate }}</h2>
-      <p class="settings-page-sub">Todos los emails enviados desde tu espacio de trabajo.</p>
+      <p class="settings-page-sub">{{ 'SETTINGS.EMAIL_LOGS.SUBTITLE' | translate }}</p>
     </div>
   </div>
 
   <form [formGroup]="filterForm" class="log-filters">
     <mat-form-field appearance="outline" class="filter-field">
-      <mat-label>Estado</mat-label>
+      <mat-label>{{ 'SETTINGS.EMAIL_LOGS.STATUS' | translate }}</mat-label>
       <mat-select formControlName="status">
-        <mat-option [value]="null">Todos los estados</mat-option>
+        <mat-option [value]="null">{{ 'SETTINGS.EMAIL_LOGS.ALL_STATUSES' | translate }}</mat-option>
         @for (s of statusOptions; track s.value) {
           <mat-option [value]="s.value">{{ s.label }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
     <mat-form-field appearance="outline" class="filter-search">
-      <mat-label>Email del destinatario</mat-label>
-      <input matInput formControlName="search" placeholder="Buscar por email…" />
+      <mat-label>{{ 'SETTINGS.EMAIL_LOGS.RECIPIENT_EMAIL' | translate }}</mat-label>
+      <input matInput formControlName="search" [placeholder]="'SETTINGS.EMAIL_LOGS.SEARCH_PLACEHOLDER' | translate" />
       <mat-icon matPrefix>search</mat-icon>
     </mat-form-field>
     <mat-form-field appearance="outline" class="filter-field">
@@ -38,10 +38,10 @@
   <mat-card class="table-card">
     @if (loading()) { <mat-progress-bar mode="indeterminate" /> }
 
-    <table mat-table [dataSource]="logs()" class="logs-table" aria-label="Email logs">
+    <table mat-table [dataSource]="logs()" class="logs-table" [attr.aria-label]="'SETTINGS.EMAIL_LOGS.TABLE_ARIA' | translate">
 
       <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'SETTINGS.EMAIL_LOGS.STATUS' | translate }}</th>
         <td mat-cell *matCellDef="let row">
           <div class="status-cell">
             <mat-icon class="status-icon" [style.color]="getStatusConfig(row.status).color">
@@ -55,14 +55,14 @@
       </ng-container>
 
       <ng-container matColumnDef="to">
-        <th mat-header-cell *matHeaderCellDef>Destinatario</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'SETTINGS.EMAIL_LOGS.RECIPIENT' | translate }}</th>
         <td mat-cell *matCellDef="let row">
           <span class="cell-text">{{ row.toEmail }}</span>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="subject">
-        <th mat-header-cell *matHeaderCellDef>Asunto</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'SETTINGS.EMAIL_LOGS.SUBJECT' | translate }}</th>
         <td mat-cell *matCellDef="let row">
           <span class="cell-muted subject-cell"
             [matTooltip]="row.errorMessage ?? ''"
@@ -73,7 +73,7 @@
       </ng-container>
 
       <ng-container matColumnDef="template">
-        <th mat-header-cell *matHeaderCellDef>Plantilla</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'SETTINGS.EMAIL_LOGS.TEMPLATE' | translate }}</th>
         <td mat-cell *matCellDef="let row">
           @if (row.templateName) {
             <span class="template-chip">{{ row.templateName }}</span>
@@ -84,7 +84,7 @@
       </ng-container>
 
       <ng-container matColumnDef="time">
-        <th mat-header-cell *matHeaderCellDef>Enviado</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'SETTINGS.EMAIL_LOGS.SENT' | translate }}</th>
         <td mat-cell *matCellDef="let row">
           <span class="cell-muted" [matTooltip]="(row.sentAt ?? row.createdAt | date:'medium') ?? ''">
             {{ (row.sentAt ?? row.createdAt) | timeAgo }}
@@ -96,7 +96,7 @@
         <th mat-header-cell *matHeaderCellDef class="col-actions"></th>
         <td mat-cell *matCellDef="let row" class="col-actions">
           @if (row.status === 'failed' || row.status === 'bounced') {
-            <button mat-icon-button matTooltip="Reintentar" color="primary"
+            <button mat-icon-button [matTooltip]="'SETTINGS.EMAIL_LOGS.RETRY' | translate" color="primary"
               (click)="retry(row)" [disabled]="isRetrying(row.id)">
               @if (isRetrying(row.id)) { <mat-spinner diameter="16" /> }
               @else { <mat-icon>refresh</mat-icon> }
@@ -112,7 +112,7 @@
         <td [attr.colspan]="columns.length" class="empty-row">
           <div class="empty-state">
             <mat-icon>mail_outline</mat-icon>
-            <p>No se encontraron registros de email</p>
+            <p>{{ 'SETTINGS.EMAIL_LOGS.EMPTY' | translate }}</p>
           </div>
         </td>
       </tr>
@@ -120,6 +120,6 @@
 
     <mat-paginator [length]="total()" [pageSize]="pageSize()" [pageIndex]="pageIndex()"
       [pageSizeOptions]="[10,25,50,100]" (page)="onPageChange($event)"
-      aria-label="Email logs pagination" />
+      [attr.aria-label]="'SETTINGS.EMAIL_LOGS.PAGINATION_ARIA' | translate" />
   </mat-card>
 </div>

@@ -23,12 +23,22 @@
           <a
             class="breadcrumb-item breadcrumb-link"
             [routerLink]="crumb.url"
-          >{{ crumb.label }}</a>
+          >
+            @if (crumb.isKey) {
+              {{ crumb.label | translate }}
+            } @else {
+              {{ crumb.label }}
+            }
+          </a>
           <mat-icon class="breadcrumb-sep" aria-hidden="true">chevron_right</mat-icon>
         } @else {
           <!-- Current page (not a link) -->
           <span class="breadcrumb-item breadcrumb-current" aria-current="page">
-            {{ crumb.label }}
+            @if (crumb.isKey) {
+              {{ crumb.label | translate }}
+            } @else {
+              {{ crumb.label }}
+            }
           </span>
         }
 

@@ -1,8 +1,8 @@
 import {
-  Component, OnInit, inject, signal, computed, ChangeDetectionStrategy,
+  Component, OnInit, inject, signal, computed, ChangeDetectionStrategy, SecurityContext,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
@@ -23,6 +23,7 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import { TimeAgoPipe } from '../../../../shared/pipes/time-ago.pipe';
 import { TranslateModule } from '@ngx-translate/core';
+import { environment } from '../../../../../environments/environment';
 
 // ── Template types & variables ────────────────────────────────────────────────
 
@@ -124,7 +125,7 @@ export class EmailTemplatesComponent implements OnInit {
   });
 
   // Live preview
-  readonly previewHtml = signal<SafeHtml>('');
+  readonly previewHtml = signal<string>('');
   readonly currentVariables = computed<string[]>(() => {
     const type = this.form.get('type')?.value as TemplateType ?? 'custom';
     return TEMPLATE_VARIABLES[type] ?? [];
@@ -137,7 +138,7 @@ export class EmailTemplatesComponent implements OnInit {
     this.form.get('htmlBody')!.valueChanges.pipe(
       debounceTime(300), takeUntil(this.destroy$),
     ).subscribe(html => {
-      this.previewHtml.set(this.sanitizer.bypassSecurityTrustHtml(html ?? ''));
+      this.previewHtml.set(this._sanitizePreviewHtml(html ?? ''));
     });
 
     // Auto-fill defaults when type changes
@@ -188,7 +189,7 @@ export class EmailTemplatesComponent implements OnInit {
     this.editingId.set(t.id);
     this.isCreating.set(false);
     this.form.patchValue({ name: t.name, type: t.type, subject: t.subject, htmlBody: t.htmlBody });
-    this.previewHtml.set(this.sanitizer.bypassSecurityTrustHtml(t.htmlBody));
+    this.previewHtml.set(this._sanitizePreviewHtml(t.htmlBody));
   }
 
   closeEditor(): void {
@@ -239,16 +240,14 @@ export class EmailTemplatesComponent implements OnInit {
   async sendTestEmail(): Promise<void> {
     const email = this.form.get('testEmail')?.value;
     if (!email) { this.notify.warning('Enter a test email address.'); return; }
-    const tenantId = this.auth.profile()?.tenantId;
-    if (!tenantId) return;
     this.sending.set(true);
     // Call the send-email Edge Function
-    const supabaseUrl = (this.supabase.client as any).supabaseUrl as string;
+    const supabaseUrl = environment.supabase.url;
     try {
       const res = await fetch(`${supabaseUrl}/functions/v1/send-email`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${(await this.supabase.client.auth.getSession()).data.session?.access_token}` },
-        body: JSON.stringify({ to: email, templateName: this.form.get('name')?.value, variables: {}, tenantId }),
+        body: JSON.stringify({ to: email, templateName: this.form.get('name')?.value, variables: {} }),
       });
       if (res.ok) { this.notify.success(`Test email sent to ${email}`); }
       else { this.notify.error('Failed to send test email.'); }
@@ -267,4 +266,8 @@ export class EmailTemplatesComponent implements OnInit {
   }
 
   trackById(_: number, t: EmailTemplate): string { return t.id; }
+
+  private _sanitizePreviewHtml(html: string): string {
+    return this.sanitizer.sanitize(SecurityContext.HTML, html) ?? '';
+  }
 }

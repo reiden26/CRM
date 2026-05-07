@@ -141,11 +141,13 @@
       "EMAIL":       "Correo electrónico",
       "PHONE":       "Teléfono",
       "COMPANY":     "Empresa",
+      "SEARCH_COMPANIES": "Buscar empresas…",
       "POSITION":    "Cargo",
       "SOURCE":      "Fuente",
       "STATUS":      "Estado",
       "ASSIGNED_TO": "Asignado a",
       "NOTES":       "Notas",
+      "NOTES_PLACEHOLDER": "Agregar notas…",
       "SAVE":        "Guardar cambios",
       "CREATE":      "Crear contacto",
       "CANCEL":      "Cancelar",
@@ -167,6 +169,7 @@
       "ALL_STATUSES":  "Todos los estados",
       "ANYONE":        "Cualquiera",
       "ALL_COMPANIES": "Todas las empresas",
+      "SEARCH_PLACEHOLDER": "Nombre, correo…",
       "CREATED_FROM":  "Creado desde",
       "CREATED_TO":    "Creado hasta",
       "CLEAR":         "Limpiar filtros"
@@ -184,9 +187,19 @@
     "KANBAN":     "Vista Kanban",
     "LIST":       "Vista Lista",
     "MOVED_TO":   "Movido a \"{{stage}}\"",
+    "ADD_TO_STAGE":"Agregar deal a {{stage}}",
+    "DROP_HERE": "Suelta deals aquí",
     "UNDO":       "Deshacer",
     "MARK_LOST":  "Marcar como perdido",
     "LOST_CONFIRM":"¿Marcar este deal como perdido?",
+    "STAGES": {
+      "NEW": "Nuevo",
+      "QUALIFIED": "Calificado",
+      "PROPOSAL": "Propuesta",
+      "NEGOTIATION": "Negociación",
+      "CLOSED_WON": "Ganado",
+      "CLOSED_LOST": "Perdido"
+    },
     "COLUMNS": {
       "DEAL":      "Deal",
       "COMPANY":   "Empresa",
@@ -198,15 +211,21 @@
     },
     "FORM": {
       "TITLE":       "Título del deal",
+      "TITLE_PLACEHOLDER": "p. ej. Licencia Enterprise Q3",
       "CONTACT":     "Contacto",
+      "SEARCH_CONTACTS": "Buscar contactos…",
       "COMPANY":     "Empresa",
       "STAGE":       "Etapa",
       "VALUE":       "Valor",
       "CURRENCY":    "Moneda",
       "PROBABILITY": "Probabilidad",
+      "LOW":         "Baja",
+      "HIGH":        "Alta",
       "CLOSE_DATE":  "Fecha de cierre esperada",
       "ASSIGNED_TO": "Asignado a",
       "DESCRIPTION": "Descripción",
+      "DESCRIPTION_PLACEHOLDER": "Notas sobre este deal…",
+      "EDIT_TITLE":  "Editar deal",
       "SAVE":        "Guardar cambios",
       "CREATE":      "Crear deal",
       "CANCEL":      "Cancelar"
@@ -245,6 +264,31 @@
       "SUCCESS": "Éxito",
       "WARNING": "Advertencia",
       "ALERTS":  "Alertas"
+    },
+    "PAGE": {
+      "UNREAD_COUNT": "{{count}} sin leer",
+      "FILTERS_ARIA": "Filtros de notificaciones",
+      "BULK_ARIA": "Acciones masivas",
+      "SELECTED_COUNT": "{{count}} seleccionado(s)",
+      "MARK_AS_READ": "Marcar como leída",
+      "CLEAR_SELECTION": "Limpiar selección",
+      "NO_NOTIFICATIONS": "Sin notificaciones",
+      "NO_UNREAD": "No tienes notificaciones sin leer.",
+      "NO_FILTERED": "No se encontraron notificaciones de tipo {{type}}.",
+      "ALL_CAUGHT_UP": "Todo al día. Aún no hay notificaciones."
+    },
+    "EVENTS": {
+      "DEAL_ASSIGNED_TITLE": "Te asignaron un deal",
+      "DEAL_ASSIGNED_BODY": "El deal \"{{dealTitle}}\" fue asignado a ti.",
+      "DEAL_WON_TITLE": "🎉 ¡Deal ganado!",
+      "DEAL_WON_BODY": "¡Felicidades! \"{{dealTitle}}\" se marcó como ganado.",
+      "TASK_ASSIGNED_TITLE": "Te asignaron una tarea",
+      "TASK_ASSIGNED_BODY": "La tarea \"{{taskTitle}}\" fue asignada a ti.",
+      "TASK_DUE_SOON_TITLE": "Tarea vence en {{hoursLeft}}h",
+      "TASK_DUE_SOON_BODY": "\"{{taskTitle}}\" vence pronto. No olvides completarla.",
+      "CONTACT_ASSIGNED_TITLE": "Te asignaron un contacto",
+      "CONTACT_ASSIGNED_BODY": "{{contactName}} fue asignado a ti.",
+      "MENTION_TITLE": "{{authorName}} te mencionó"
     }
   },
   "SETTINGS": {
@@ -258,6 +302,21 @@
       "EMAIL_LOGS": "Registros de email",
       "NOTIF_PREFS":"Notificaciones",
       "AUDIT":      "Bitácora de cambios"
+    },
+    "EMAIL_LOGS": {
+      "SUBTITLE": "Todos los emails enviados desde tu espacio de trabajo.",
+      "STATUS": "Estado",
+      "ALL_STATUSES": "Todos los estados",
+      "RECIPIENT_EMAIL": "Email del destinatario",
+      "SEARCH_PLACEHOLDER": "Buscar por email…",
+      "TABLE_ARIA": "Registros de email",
+      "RECIPIENT": "Destinatario",
+      "SUBJECT": "Asunto",
+      "TEMPLATE": "Plantilla",
+      "SENT": "Enviado",
+      "RETRY": "Reintentar",
+      "EMPTY": "No se encontraron registros de email",
+      "PAGINATION_ARIA": "Paginación de registros de email"
     },
     "COMPANY": {
       "TITLE":    "Perfil de empresa",
@@ -374,6 +433,7 @@
     "CONFIRM":     "Confirmar",
     "BACK":        "Volver",
     "CLOSE":       "Cerrar",
+    "CLEAR":       "Limpiar",
     "YES":         "Sí",
     "NO":          "No",
     "NONE":        "Ninguno",
@@ -423,6 +483,12 @@
   "NOT_FOUND_PAGE": {
     "TITLE":    "Página no encontrada",
     "SUBTITLE": "La página que buscas no existe o fue movida."
+  },
+  "COMING_SOON": {
+    "TITLE": "Próximamente",
+    "SUBTITLE": "{{feature}} estará disponible muy pronto.",
+    "HINT": "Estamos trabajando para traértelo cuanto antes.",
+    "BACK": "Volver al Dashboard"
   },
   "CONFIRM_DIALOG": {
     "CONFIRM": "Confirmar",

@@ -1,0 +1,23 @@
+<div class="coming-soon">
+  <div class="coming-soon-inner">
+    <div class="coming-soon-icon">
+      <mat-icon aria-hidden="true">{{ icon() }}</mat-icon>
+    </div>
+
+    <div class="coming-soon-title">{{ 'COMING_SOON.TITLE' | translate }}</div>
+
+    <div class="coming-soon-subtitle">
+      {{ 'COMING_SOON.SUBTITLE' | translate:{ feature: (featureLabelKey() | translate) } }}
+    </div>
+
+    <div class="coming-soon-hint">{{ 'COMING_SOON.HINT' | translate }}</div>
+
+    <div class="coming-soon-actions">
+      <a mat-raised-button color="primary" routerLink="/dashboard">
+        <mat-icon>arrow_back</mat-icon>
+        {{ 'COMING_SOON.BACK' | translate }}
+      </a>
+    </div>
+  </div>
+</div>
+

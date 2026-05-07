@@ -11,7 +11,7 @@
  *   3. Update processed_at on success, increment attempts on failure
  */
 
-import { handleCors, corsHeaders } from '../_shared/cors.ts';
+import { handleCors, resolveCorsHeaders } from '../_shared/cors.ts';
 import { createServiceClient } from '../_shared/supabase-client.ts';
 import type { EmailQueueItem } from '../_shared/types.ts';
 
@@ -62,22 +62,14 @@ Deno.serve(async (req: Request) => {
   // Allow manual HTTP trigger (useful for testing) as well as cron invocation
   const corsResponse = handleCors(req);
   if (corsResponse) return corsResponse;
+  const corsHeaders = resolveCorsHeaders(req);
 
   const supabase = createServiceClient();
   const now = new Date().toISOString();
 
   // ── 1. Fetch pending queue items ─────────────────────────────────────────
-  const { data: items, error: fetchError } = await supabase
-    .from('email_queue')
-    .select('*')
-    .is('processed_at', null)
-    .lte('scheduled_at', now)
-    .lt('attempts', supabase.rpc('get_max_attempts_raw')) // use raw column comparison below
-    .order('scheduled_at', { ascending: true })
-    .limit(BATCH_SIZE);
-
   // Supabase JS doesn't support column-to-column comparison directly,
-  // so we use a raw filter via the PostgREST syntax:
+  // so we use a raw filter via PostgREST syntax.
   const { data: pendingItems, error: queueError } = await supabase
     .from('email_queue')
     .select('*')

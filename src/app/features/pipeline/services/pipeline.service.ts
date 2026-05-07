@@ -29,8 +29,7 @@ const DEAL_SELECT = `
   id, tenant_id, title, contact_id, company_id, stage, value, currency,
   probability, expected_close_date, assigned_to, created_by, created_at, updated_at,
   contacts ( first_name, last_name ),
-  companies ( name ),
-  profiles!deals_assigned_to_fkey ( full_name, avatar_url )
+  companies ( name )
 `.trim();
 
 @Injectable({ providedIn: 'root' })
@@ -107,17 +106,37 @@ export class PipelineService implements OnDestroy {
 
     const { data, error } = await this.supabase.client
       .from('deal_stages')
-      .select('id, name, order_position, color, is_default')
+      .select('id, tenant_id, name, order_position, color, is_default')
       .or(`tenant_id.eq.${tenantId},tenant_id.is.null`)
       .order('order_position', { ascending: true })
-      .returns<DealStageRow[]>();
+      .returns<(DealStageRow & { tenant_id?: string | null })[]>();
 
     if (error) {
       console.error('[PipelineService] getStages:', error.message);
       return [];
     }
 
-    const stages = (data ?? []).map(mapDealStageRow);
+    // When both global default stages (tenant_id null) and tenant custom stages
+    // exist with the same logical name, prefer the tenant-specific one.
+    const byKey = new Map<string, DealStageRow & { tenant_id?: string | null }>();
+    for (const row of data ?? []) {
+      const key = row.name.toLowerCase().replace(/\s+/g, '_');
+      const existing = byKey.get(key);
+      if (!existing) {
+        byKey.set(key, row);
+        continue;
+      }
+
+      const currentIsTenant = Boolean(row.tenant_id);
+      const existingIsTenant = Boolean(existing.tenant_id);
+      if (currentIsTenant && !existingIsTenant) {
+        byKey.set(key, row);
+      }
+    }
+
+    const stages = Array.from(byKey.values())
+      .sort((a, b) => a.order_position - b.order_position)
+      .map(mapDealStageRow);
     this._stages.set(stages);
     return stages;
   }
@@ -157,7 +176,8 @@ export class PipelineService implements OnDestroy {
         return [];
       }
 
-      const deals = (data ?? []).map(mapDealRow);
+      const rows = await this._hydrateAssignedProfiles(data ?? []);
+      const deals = rows.map(mapDealRow);
       this._deals.set(deals);
       return deals;
 
@@ -173,8 +193,9 @@ export class PipelineService implements OnDestroy {
       .eq('id', id)
       .single<DealRow>();
 
-    if (error) return null;
-    return data ? mapDealRow(data) : null;
+    if (error || !data) return null;
+    const [row] = await this._hydrateAssignedProfiles([data]);
+    return mapDealRow(row);
   }
 
   getDealStats(): Map<string, StageStats> {
@@ -221,7 +242,8 @@ export class PipelineService implements OnDestroy {
         return null;
       }
 
-      const deal = mapDealRow(data);
+      const [row] = await this._hydrateAssignedProfiles([data]);
+      const deal = mapDealRow(row);
       this._deals.update(list => [deal, ...list]);
       this.notify.success(`Deal "${deal.title}" created.`);
       return deal;
@@ -267,7 +289,8 @@ export class PipelineService implements OnDestroy {
         return null;
       }
 
-      const updated = mapDealRow(data);
+      const [row] = await this._hydrateAssignedProfiles([data]);
+      const updated = mapDealRow(row);
       this._deals.update(list => list.map(d => d.id === id ? updated : d));
 
       // ── Fire deal_assigned notifications on reassignment ─────────────────
@@ -421,6 +444,30 @@ export class PipelineService implements OnDestroy {
       this.supabase.client.removeChannel(this._channel);
       this._channel = null;
     }
+  }
+
+  private async _hydrateAssignedProfiles(rows: DealRow[]): Promise<DealRow[]> {
+    if (rows.length === 0) return rows;
+
+    const userIds = [...new Set(rows.map((r) => r.assigned_to).filter(Boolean))] as string[];
+    if (userIds.length === 0) return rows;
+
+    const { data: profiles } = await this.supabase.client
+      .from('profiles')
+      .select('id, full_name, avatar_url')
+      .in('id', userIds);
+
+    const profileMap = new Map((profiles ?? []).map((p: any) => [p.id, p]));
+    return rows.map((row) => {
+      const p = row.assigned_to ? profileMap.get(row.assigned_to) : null;
+      return {
+        ...row,
+        profiles: {
+          full_name: p?.full_name ?? null,
+          avatar_url: p?.avatar_url ?? null,
+        },
+      };
+    });
   }
 
   // ── Email helpers ─────────────────────────────────────────────────────────

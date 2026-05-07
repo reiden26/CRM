@@ -153,18 +153,14 @@ export class AuthService implements OnDestroy {
       this.securityService.resetRateLimit();
 
       if (data.session) {
-        console.log('[AuthService] signIn: session received, loading profile...');
         this._session.set(data.session);
         await this._loadProfileAndTenant(data.session.user.id);
-        console.log('[AuthService] signIn: profile loaded:', this._profile()?.role, 'tenant:', this._profile()?.tenantId);
         await this._updateLastAccess(data.session.user.id);
         this.inactivityService.start(async () => { await this.signOut(); });
         this.securityService.broadcastSessionEvent('SIGNED_IN');
       }
 
-      console.log('[AuthService] signIn: navigating to /dashboard...');
       await this.router.navigate(['/dashboard']);
-      console.log('[AuthService] signIn: navigation complete');
       return { success: true };
 
     } catch (err) {
@@ -365,8 +361,6 @@ export class AuthService implements OnDestroy {
         await new Promise(r => setTimeout(r, 500 * attempt));
       }
 
-      console.log(`[AuthService] _loadProfile attempt ${attempt + 1} for user:`, userId);
-
       const { data, error } = await this.supabase.client
         .from('profiles')
         .select(
@@ -374,8 +368,6 @@ export class AuthService implements OnDestroy {
         )
         .eq('id', userId)
         .maybeSingle<ProfileRow>();
-
-      console.log('[AuthService] _loadProfile result:', { data, error });
 
       if (!error && data) {
         this._profile.set(mapProfileRow(data));

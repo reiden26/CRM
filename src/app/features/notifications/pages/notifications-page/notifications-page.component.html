@@ -5,7 +5,7 @@
     <div class="page-header-left">
       <h1 class="page-title">{{ 'NOTIFICATIONS.TITLE' | translate }}</h1>
       @if (unreadCount() > 0) {
-        <span class="unread-chip">{{ unreadCount() }} unread</span>
+        <span class="unread-chip">{{ 'NOTIFICATIONS.PAGE.UNREAD_COUNT' | translate:{ count: unreadCount() } }}</span>
       }
     </div>
     <div class="page-header-right">
@@ -19,7 +19,7 @@
   </div>
 
   <!-- ── Filter tabs ──────────────────────────────────────────────────────── -->
-  <div class="filter-tabs" role="tablist" aria-label="Notification filters">
+  <div class="filter-tabs" role="tablist" [attr.aria-label]="'NOTIFICATIONS.PAGE.FILTERS_ARIA' | translate">
     @for (opt of filterOptions; track opt.value) {
       <button
         class="filter-tab"
@@ -29,7 +29,7 @@
         (click)="setFilter(opt.value)"
       >
         <mat-icon class="tab-icon">{{ opt.icon }}</mat-icon>
-        <span>{{ opt.label }}</span>
+        <span>{{ opt.labelKey | translate }}</span>
         @if (getFilterCount(opt.value) > 0) {
           <span class="tab-count">{{ getFilterCount(opt.value) }}</span>
         }
@@ -39,8 +39,8 @@
 
   <!-- ── Bulk action bar ──────────────────────────────────────────────────── -->
   @if (selectedCount() > 0) {
-    <div class="bulk-bar" role="toolbar" aria-label="Bulk actions">
-      <span class="bulk-count">{{ selectedCount() }} selected</span>
+    <div class="bulk-bar" role="toolbar" [attr.aria-label]="'NOTIFICATIONS.PAGE.BULK_ARIA' | translate">
+      <span class="bulk-count">{{ 'NOTIFICATIONS.PAGE.SELECTED_COUNT' | translate:{ count: selectedCount() } }}</span>
       <div class="bulk-actions">
         @if (hasSelectedUnread()) {
           <button
@@ -49,7 +49,7 @@
             [disabled]="bulkLoading()"
           >
             <mat-icon>done</mat-icon>
-            Mark as read
+            {{ 'NOTIFICATIONS.PAGE.MARK_AS_READ' | translate }}
           </button>
         }
         <button
@@ -63,9 +63,9 @@
           } @else {
             <mat-icon>delete_outline</mat-icon>
           }
-          Delete
+          {{ 'COMMON.DELETE' | translate }}
         </button>
-        <button mat-icon-button (click)="clearSelection()" matTooltip="Clear selection">
+        <button mat-icon-button (click)="clearSelection()" [matTooltip]="'NOTIFICATIONS.PAGE.CLEAR_SELECTION' | translate">
           <mat-icon>close</mat-icon>
         </button>
       </div>
@@ -87,19 +87,19 @@
     @if (!loading() && filteredNotifications().length === 0) {
       <div class="state-container empty">
         <mat-icon class="empty-icon">notifications_none</mat-icon>
-        <h3>No notifications</h3>
+        <h3>{{ 'NOTIFICATIONS.PAGE.NO_NOTIFICATIONS' | translate }}</h3>
         <p>
           @if (activeFilter() === 'unread') {
-            You have no unread notifications.
+            {{ 'NOTIFICATIONS.PAGE.NO_UNREAD' | translate }}
           } @else if (activeFilter() !== 'all') {
-            No {{ activeFilter() }} notifications found.
+            {{ 'NOTIFICATIONS.PAGE.NO_FILTERED' | translate:{ type: activeFilter() } }}
           } @else {
-            You're all caught up! No notifications yet.
+            {{ 'NOTIFICATIONS.PAGE.ALL_CAUGHT_UP' | translate }}
           }
         </p>
         @if (activeFilter() !== 'all') {
           <button mat-stroked-button (click)="setFilter('all')">
-            View all notifications
+            {{ 'NOTIFICATIONS.VIEW_ALL' | translate }}
           </button>
         }
       </div>

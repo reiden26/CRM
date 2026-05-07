@@ -79,7 +79,7 @@ export interface DealRow {
   // Joined
   contacts?:  { first_name: string; last_name: string } | null;
   companies?: { name: string } | null;
-  profiles?:  { full_name: string; avatar_url: string | null } | null;
+  profiles?:  { full_name: string | null; avatar_url: string | null } | null;
 }
 
 export function mapDealRow(r: DealRow): Deal {

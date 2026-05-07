@@ -30,17 +30,17 @@ type FilterTab = 'all' | 'unread' | InAppNotificationType;
 
 interface FilterOption {
   value: FilterTab;
-  label: string;
+  labelKey: string;
   icon:  string;
 }
 
 const FILTER_OPTIONS: FilterOption[] = [
-  { value: 'all',     label: 'All',     icon: 'inbox' },
-  { value: 'unread',  label: 'Unread',  icon: 'mark_email_unread' },
-  { value: 'info',    label: 'Info',    icon: 'info_outline' },
-  { value: 'success', label: 'Success', icon: 'check_circle_outline' },
-  { value: 'warning', label: 'Warning', icon: 'warning_amber' },
-  { value: 'danger',  label: 'Alerts',  icon: 'error_outline' },
+  { value: 'all',     labelKey: 'NOTIFICATIONS.FILTERS.ALL',     icon: 'inbox' },
+  { value: 'unread',  labelKey: 'NOTIFICATIONS.FILTERS.UNREAD',  icon: 'mark_email_unread' },
+  { value: 'info',    labelKey: 'NOTIFICATIONS.FILTERS.INFO',    icon: 'info_outline' },
+  { value: 'success', labelKey: 'NOTIFICATIONS.FILTERS.SUCCESS', icon: 'check_circle_outline' },
+  { value: 'warning', labelKey: 'NOTIFICATIONS.FILTERS.WARNING', icon: 'warning_amber' },
+  { value: 'danger',  labelKey: 'NOTIFICATIONS.FILTERS.ALERTS',  icon: 'error_outline' },
 ];
 
 const PAGE_SIZE = 20;

@@ -18,7 +18,7 @@ import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 import { errorInterceptor }   from './core/interceptors/error.interceptor';
 
 export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
 }
 
 export const appConfig: ApplicationConfig = {

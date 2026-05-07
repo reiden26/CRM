@@ -16,7 +16,7 @@ import { SupabaseService } from '../../../../core/services/supabase.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface Stage {
   id:            string;
@@ -55,6 +55,7 @@ export class PipelineConfigComponent implements OnInit {
   private readonly auth     = inject(AuthService);
   private readonly notify   = inject(NotificationService);
   private readonly fb       = inject(FormBuilder);
+  private readonly translate = inject(TranslateService);
 
   readonly stages   = signal<Stage[]>([]);
   readonly loading  = signal(true);
@@ -78,20 +79,37 @@ export class PipelineConfigComponent implements OnInit {
     this.loading.set(true);
     const { data } = await this.supabase.client
       .from('deal_stages')
-      .select('id, name, color, order_position, is_default')
+      .select('id, tenant_id, name, color, order_position, is_default')
       .or(`tenant_id.eq.${tenantId},tenant_id.is.null`)
       .order('order_position');
 
+    const byKey = new Map<string, any>();
+    for (const row of data ?? []) {
+      const key = this._normalizeStageName(row.name);
+      const existing = byKey.get(key);
+      if (!existing) {
+        byKey.set(key, row);
+        continue;
+      }
+      const currentIsTenant = Boolean(row.tenant_id);
+      const existingIsTenant = Boolean(existing.tenant_id);
+      if (currentIsTenant && !existingIsTenant) {
+        byKey.set(key, row);
+      }
+    }
+
     this.stages.set(
-      (data ?? []).map((s: any) => ({
-        id:            s.id,
-        name:          s.name,
-        color:         s.color,
-        orderPosition: s.order_position,
-        isDefault:     s.is_default,
-        isWon:         s.name.toLowerCase().includes('won'),
-        isLost:        s.name.toLowerCase().includes('lost'),
-      })),
+      Array.from(byKey.values())
+        .sort((a, b) => a.order_position - b.order_position)
+        .map((s: any) => ({
+          id:            s.id,
+          name:          s.name,
+          color:         s.color,
+          orderPosition: s.order_position,
+          isDefault:     s.is_default,
+          isWon:         this._normalizeStageName(s.name) === 'closed_won',
+          isLost:        this._normalizeStageName(s.name) === 'closed_lost',
+        })),
     );
     this.loading.set(false);
   }
@@ -156,6 +174,42 @@ export class PipelineConfigComponent implements OnInit {
 
   setEditColor(stageId: string, color: string): void {
     this.updateStage(this.stages().find(s => s.id === stageId)!, { color });
+  }
+
+  getStageLabel(name: string): string {
+    const stageType = this._normalizeStageName(name);
+    const key = `PIPELINE.STAGES.${stageType.toUpperCase()}`;
+    const translated = this.translate.instant(key);
+    return translated === key ? name : translated;
+  }
+
+  onStageNameBlur(stage: Stage, value: string): void {
+    const trimmed = value.trim();
+    if (!trimmed) return;
+    if (trimmed === this.getStageLabel(stage.name) || trimmed === stage.name) return;
+    this.updateStage(stage, { name: trimmed });
+  }
+
+  private _normalizeStageName(name: string): string {
+    const normalized = name.toLowerCase().trim().replace(/[\s-]+/g, '_');
+    const map: Record<string, string> = {
+      new: 'new',
+      nuevo: 'new',
+      qualified: 'qualified',
+      calificado: 'qualified',
+      proposal: 'proposal',
+      propuesta: 'proposal',
+      negotiation: 'negotiation',
+      negociacion: 'negotiation',
+      'negociación': 'negotiation',
+      closed_won: 'closed_won',
+      ganado: 'closed_won',
+      cerrada_ganada: 'closed_won',
+      closed_lost: 'closed_lost',
+      perdido: 'closed_lost',
+      cerrada_perdida: 'closed_lost',
+    };
+    return map[normalized] ?? normalized;
   }
 
   trackById(_: number, s: Stage): string { return s.id; }

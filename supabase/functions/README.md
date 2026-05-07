@@ -9,6 +9,17 @@
 | `send-push-notification` | HTTP POST | Sends Web Push to user's subscriptions |
 | `notify-on-deal-assigned` | DB Webhook | Notifies user when a deal is assigned |
 
+## Security model
+
+- `send-email`:
+  - Accepts authenticated user JWT and automatically derives tenant from `profiles.tenant_id`.
+  - Also accepts service-role calls for internal jobs/webhooks.
+- `send-push-notification`:
+  - User JWT can only send notifications to itself (`userId` must match JWT subject).
+  - Service-role can send internal notifications.
+- `notify-on-deal-assigned`:
+  - Service-role only (database webhook/internal automation).
+
 ## Required secrets
 
 Set these via the Supabase Dashboard (Project Settings → Edge Functions → Secrets)
@@ -20,6 +31,7 @@ supabase secrets set RESEND_FROM_EMAIL="CRM <noreply@yourdomain.com>"
 supabase secrets set VAPID_PUBLIC_KEY=Bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 supabase secrets set VAPID_PRIVATE_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 supabase secrets set VAPID_SUBJECT=mailto:admin@yourdomain.com
+supabase secrets set ALLOWED_ORIGINS=https://your-app.com,https://staging.your-app.com
 ```
 
 Generate VAPID keys with:

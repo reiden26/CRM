@@ -21,14 +21,12 @@
         <span class="kpi-label">{{ label }}</span>
         <span class="kpi-value">{{ value }}</span>
 
-        @if (subtitle) {
-          <span class="kpi-subtitle">{{ subtitle }}</span>
-        }
+        <span class="kpi-subtitle" [class.subtitle-hidden]="!subtitle">{{ subtitle || '\u00A0' }}</span>
 
         @if (change !== null) {
           <div class="kpi-change" [style.color]="changeColor">
             <mat-icon class="change-icon">{{ changeIcon }}</mat-icon>
-            <span>{{ changeLabel }}</span>
+            <span>{{ changeLabel }} {{ 'DASHBOARD.KPI.VS_PERIOD' | translate }}</span>
           </div>
         }
       </div>

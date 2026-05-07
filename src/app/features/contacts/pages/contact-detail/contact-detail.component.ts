@@ -193,12 +193,21 @@ export class ContactDetailComponent implements OnInit, OnDestroy {
     const { data } = await this.supabase.client
       .from('activities')
       .select(`
-        id, type, title, description, due_date, completed_at, created_by, created_at,
-        profiles!activities_created_by_fkey ( full_name )
+        id, type, title, description, due_date, completed_at, created_by, created_at
       `)
       .eq('contact_id', contactId)
       .order('created_at', { ascending: false })
       .limit(50);
+
+    const creatorIds = [...new Set((data ?? []).map((a: any) => a.created_by).filter(Boolean))];
+    const nameMap = new Map<string, string>();
+    if (creatorIds.length > 0) {
+      const { data: creators } = await this.supabase.client
+        .from('profiles')
+        .select('id, full_name')
+        .in('id', creatorIds);
+      (creators ?? []).forEach((c: any) => nameMap.set(c.id, c.full_name ?? ''));
+    }
 
     this.activities.set(
       (data ?? []).map((a: any) => ({
@@ -209,7 +218,7 @@ export class ContactDetailComponent implements OnInit, OnDestroy {
         dueDate:       a.due_date,
         completedAt:   a.completed_at,
         createdBy:     a.created_by,
-        createdByName: a.profiles?.full_name ?? null,
+        createdByName: nameMap.get(a.created_by) ?? null,
         createdAt:     a.created_at,
       })),
     );

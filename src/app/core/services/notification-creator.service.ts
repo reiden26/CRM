@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { SupabaseService } from './supabase.service';
 import { AuthService } from './auth.service';
 
@@ -29,6 +30,7 @@ export class NotificationCreatorService {
 
   private readonly supabase = inject(SupabaseService);
   private readonly auth     = inject(AuthService);
+  private readonly translate = inject(TranslateService);
 
   // ── Core method ───────────────────────────────────────────────────────────
 
@@ -62,8 +64,8 @@ export class NotificationCreatorService {
     void this.create({
       userId:       assignedToUserId,
       tenantId,
-      title:        'New deal assigned to you',
-      body:         `Deal "${dealTitle}" has been assigned to you.`,
+      title:        this.translate.instant('NOTIFICATIONS.EVENTS.DEAL_ASSIGNED_TITLE'),
+      body:         this.translate.instant('NOTIFICATIONS.EVENTS.DEAL_ASSIGNED_BODY', { dealTitle }),
       type:         'info',
       resourceType: 'deal',
       resourceId:   dealId,
@@ -80,8 +82,8 @@ export class NotificationCreatorService {
     void this.create({
       userId:       assignedToUserId,
       tenantId,
-      title:        '🎉 Deal won!',
-      body:         `Congratulations! "${dealTitle}" has been marked as won.`,
+      title:        this.translate.instant('NOTIFICATIONS.EVENTS.DEAL_WON_TITLE'),
+      body:         this.translate.instant('NOTIFICATIONS.EVENTS.DEAL_WON_BODY', { dealTitle }),
       type:         'success',
       resourceType: 'deal',
       resourceId:   dealId,
@@ -98,8 +100,8 @@ export class NotificationCreatorService {
     void this.create({
       userId:       assignedToUserId,
       tenantId,
-      title:        'New task assigned to you',
-      body:         `Task "${taskTitle}" has been assigned to you.`,
+      title:        this.translate.instant('NOTIFICATIONS.EVENTS.TASK_ASSIGNED_TITLE'),
+      body:         this.translate.instant('NOTIFICATIONS.EVENTS.TASK_ASSIGNED_BODY', { taskTitle }),
       type:         'info',
       resourceType: 'task',
       resourceId:   activityId,
@@ -117,8 +119,8 @@ export class NotificationCreatorService {
     void this.create({
       userId:       assignedToUserId,
       tenantId,
-      title:        `Task due in ${hoursLeft}h`,
-      body:         `"${taskTitle}" is due soon. Don't forget to complete it.`,
+      title:        this.translate.instant('NOTIFICATIONS.EVENTS.TASK_DUE_SOON_TITLE', { hoursLeft }),
+      body:         this.translate.instant('NOTIFICATIONS.EVENTS.TASK_DUE_SOON_BODY', { taskTitle }),
       type:         hoursLeft <= 2 ? 'danger' : 'warning',
       resourceType: 'task',
       resourceId:   activityId,
@@ -135,8 +137,8 @@ export class NotificationCreatorService {
     void this.create({
       userId:       assignedToUserId,
       tenantId,
-      title:        'Contact assigned to you',
-      body:         `${contactName} has been assigned to you.`,
+      title:        this.translate.instant('NOTIFICATIONS.EVENTS.CONTACT_ASSIGNED_TITLE'),
+      body:         this.translate.instant('NOTIFICATIONS.EVENTS.CONTACT_ASSIGNED_BODY', { contactName }),
       type:         'info',
       resourceType: 'contact',
       resourceId:   contactId,
@@ -176,7 +178,7 @@ export class NotificationCreatorService {
       void this.create({
         userId:       user.id,
         tenantId,
-        title:        `${authorName} mentioned you`,
+        title:        this.translate.instant('NOTIFICATIONS.EVENTS.MENTION_TITLE', { authorName }),
         body:         noteBody.slice(0, 120) + (noteBody.length > 120 ? '…' : ''),
         type:         'info',
         resourceType,

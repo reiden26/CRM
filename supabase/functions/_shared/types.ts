@@ -58,7 +58,7 @@ export interface SendEmailPayload {
   to: string;
   templateName: string;
   variables: Record<string, string>;
-  tenantId: string;
+  tenantId?: string;
 }
 
 export interface SendPushPayload {
